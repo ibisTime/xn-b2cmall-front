@@ -2758,6 +2758,7 @@ table td {
     height: 110px;
     text-align: center;
     margin: 0 auto;
+    font-size: 0;
 }
 
 .cartImg-after {
