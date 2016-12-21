@@ -1,71 +1,65 @@
-define([
-    'app/util/dialog'
-], function(dialog) {
+define(["jquery"], function($) {
     var cache = {};
+
+    function getUrl() {
+        return "/api";
+    }
+
+    function clearSessionUser() {
+        sessionStorage.removeItem("user"); //userId
+        sessionStorage.removeItem("tk"); //token
+        sessionStorage.removeItem("kind"); //是否微信登录
+        sessionStorage.removeItem("m"); //手机号
+    }
     return {
-        /**
-         * data request through get should be cached in per page
-         * add timestamp after url can clear server and browser cache
-         * */
-        get: function(url, param, reload, sync) {
-            if (typeof param == 'boolean' || typeof param == 'undefined') {
-                reload = param;
+        get: function(code, param, cache) {
+            if (typeof param == 'undefined' || typeof param == "boolean") {
+                cache = param;
                 param = {};
             }
-            var tokenStr = '_=' + new Date().valueOf(),
-                symbol = (url.indexOf('?') === -1 ? '?' : '&');
-            if (url && !/_=.*/.test(url)) {
-                var send_url = url + symbol + tokenStr;
-            }
-            var cache_url = url + JSON.stringify(param);
-            if (reload) {
+
+            return this.post(code, {
+                json: param,
+                cache: cache || true,
+                close: true
+            }, true);
+        },
+
+        post: function(code, options) {
+            var param = options.json;
+
+            var token = sessionStorage.getItem("tk") || "",
+                userId = sessionStorage.getItem("user") || "";
+
+            token && (param["token"] = token);
+            userId && (param["userId"] = userId);
+            param["systemCode"] = SYSTEM_CODE;
+
+            var sendUrl = getUrl(code);
+            var sendParam = {
+                code: code,
+                json: param
+            };
+            var cache_url = sendUrl + JSON.stringify(sendParam);
+            if (!options.cache) {
                 delete cache[cache_url];
             }
             if (!cache[cache_url]) {
+                sendParam.json = JSON.stringify(param);
                 cache[cache_url] = $.ajax({
-                    async: !sync,
-                    type: 'get',
-                    url: send_url,
-                    data: param
+                    type: 'post',
+                    url: sendUrl,
+                    data: sendParam
                 });
-                cache[cache_url].then(function(res) {
-                    if (res.timeout) {
-                        localStorage.removeItem("user");
-                        location.href = "../user/login.html?return=" + encodeURIComponent(location.pathname + location.search);
-                    }
-                }, function(res) {});
             }
-            return cache[cache_url];
-        },
-
-        post: function(url, param) {
-            var specialCode = /^[\s0-9a-zA-Z\u4e00-\u9fa5\u00d7\u300a\u2014\u2018\u2019\u201c\u201d\u2026\u3001\u3002\u300b\u300e\u300f\u3010\u3011\uff01\uff08\uff09\uff0c\uff1a\uff1b\uff1f\uff0d\uff03\uffe5\x21-\x7e]*$/;
-            var flag = false;
-            for (var n in param) {
-                if (!specialCode.test(param[n])) {
-                    flag = true;
-                    break;
-                }
-            }
-            if (flag) {
-                var defer = jQuery.Deferred();
-                defer.resolve({ success: false, msg: "提交表单中含特殊字符" });
-                return defer.promise();
-            }
-            var promise = $.ajax({
-                type: 'post',
-                traditional: true,
-                url: url,
-                data: param
+            return cache[cache_url].then(function(res) {
+                var result = {};
+                res.errorCode == "0" ? (result.success = true, result.data = res.data) :
+                    (result.success = false, result.msg = res.errorInfo);
+                return result;
+            }, function(obj, error, msg) {
+                console.log(msg);
             });
-            //var promise = $.post(url, param);
-            promise.then(function(res) {
-                if (res.timeout) {
-                    localStorage.removeItem("user");
-                    location.href = "../user/login.html?return=" + encodeURIComponent(location.pathname + location.search);
-                }
-            }, function(res) {});
-            return promise;
         }
     };
 });

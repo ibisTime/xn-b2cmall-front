@@ -1,14 +1,14 @@
 define([
     'app/controller/base',
     'app/util/ajax',
-    'Handlebars'
-], function(base, Ajax, Handlebars) {
-    var url = APIURL + '/operators/queryCart',
-        infos = [],
+    'app/module/foot/foot'
+], function(base, Ajax, Foot) {
+    var infos = [],
         $this;
     init();
 
     function init() {
+        Foot.addFoot(2);
         if (!base.isLogin()) {
             location.href = "../user/login.html?return=" + base.makeReturnUrl();
         } else {
@@ -35,13 +35,12 @@ define([
     //获取购物车商品
     function getMyCart() {
         infos = [];
-        Ajax.get(url, true)
+        Ajax.get("808041")
             .then(function(response) {
                 if (response.success) {
                     var data = response.data,
                         html = "";
                     if (data.length) {
-                        var totalAmount = 0;
                         html = '<ul class="b_bd_b bg_fff">';
                         data.forEach(function(cl) {
                             var amount = (+cl.salePrice) * (+cl.quantity);
@@ -97,7 +96,7 @@ define([
                 if ($(item).hasClass("active")) {
                     if (!$(item).closest("li[code]").find("div.cart-down").length) {
                         checkItem.push(i);
-                        //如果包含下架商品
+                    //如果包含下架商品
                     } else {
                         base.showMsg("您所选择的商品中包含已经下架的商品，<br/>请重新选择！", 2000);
                         return;
@@ -142,9 +141,6 @@ define([
             if (!isSpecialCode(keyCode) && !isNumber(keyCode)) {
                 me.val(me.val().replace(/[^\d]/g, ""));
             }
-            // if (!me.val()) {
-            //     me.change();
-            // }
         }).on("change", "input[type=text]", function(e) {
             e.stopPropagation();
             var keyCode = e.charCode || e.keyCode;
@@ -167,7 +163,7 @@ define([
             //修改购物车商品信息
             $("#loaddingIcon").removeClass("hidden");
             me = this;
-            Ajax.post(APIURL + '/operators/editCart', config)
+            Ajax.post("808033", { json: config })
                 .then(function(response) {
                     $("#loaddingIcon").addClass("hidden");
                     if (response.success) {
@@ -252,8 +248,6 @@ define([
                 var ori_cnyTotal = (+$("#totalCnyAmount").text()) * 1000;
                 $("#totalCnyAmount").text(((ori_cnyTotal + infos[$li.index()]) / 1000).toFixed(2));
             } else {
-                var items = $("#od-ul").children("li").find("input[type=checkbox]"),
-                    flag = false;
                 $("#allChecked").removeClass("active");
                 var ori_cnyTotal = (+$("#totalCnyAmount").text()) * 1000;
                 $("#totalCnyAmount").text(((ori_cnyTotal - infos[$li.index()]) / 1000).toFixed(0));
@@ -335,7 +329,9 @@ define([
         var $li = $(me).closest("li[code]"),
             code = $li.attr('code');
         $("#loaddingIcon").removeClass("hidden");
-        Ajax.post(APIURL + "/operators/deleteFromCart", { "code": code })
+        Ajax.post("808031", {
+                json: { "code": code }
+            })
             .then(function(response) {
                 $("#loaddingIcon").addClass("hidden");
                 if (response.success) {

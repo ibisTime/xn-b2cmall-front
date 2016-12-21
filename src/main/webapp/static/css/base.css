@@ -1766,6 +1766,10 @@ textarea {
     line-height: 1.6em !important;
 }
 
+.lh18em {
+    line-height: 1.8em !important;
+}
+
 .lh2rem {
     line-height: 2rem !important;
 }
@@ -1923,7 +1927,7 @@ textarea {
 }
 
 .icon-loading {
-    background: url(/static/images/loading.gif) 50% 56% no-repeat;
+    background: url(../images/loading.gif?__inline) 50% 56% no-repeat;
     width: 100%;
     display: block;
     position: fixed;
@@ -1935,21 +1939,21 @@ textarea {
 }
 
 .icon-loading1 {
-    background: url(/static/images/loading.gif) center no-repeat;
+    background: url(../images/loading.gif?__inline) center no-repeat;
     width: 100%;
     display: block;
     height: 500px;
 }
 
 .icon-loading2 {
-    background: url(/static/images/loading.gif) center no-repeat;
+    background: url(../images/loading.gif?__inline) center no-repeat;
     width: 100%;
     display: block;
     height: 100px;
 }
 
 .icon-loading3 {
-    background: url(/static/images/loading.gif) center no-repeat;
+    background: url(../images/loading.gif?__inline) center no-repeat;
     width: 100%;
     display: block;
     background-color: #fff;
@@ -1958,7 +1962,7 @@ textarea {
 }
 
 .icon-loading4 {
-    background: url(/static/images/loading.gif) 50% 50% no-repeat;
+    background: url(../images/loading.gif?__inline) 50% 50% no-repeat;
     width: 100%;
     display: block;
     position: fixed;
@@ -1970,7 +1974,7 @@ textarea {
 }
 
 .icon-loading5 {
-    background: url(/static/images/loading.gif) 50% 50% no-repeat;
+    background: url(../images/loading.gif?__inline) 50% 50% no-repeat;
     width: 100%;
     position: fixed;
     top: 0;
@@ -2093,14 +2097,15 @@ table td {
     position: absolute;
     left: 0;
     top: 0;
+    z-index: 10;
 }
 
 .bg_m_icon {
-    background: url(../images/m-icon.png) center no-repeat;
+    background: url(../images/m-icon.png?__inline) center no-repeat;
 }
 
 .bg_p_icon {
-    background: url(../images/p-icon.png) center no-repeat;
+    background: url(../images/p-icon.png?__inline) center no-repeat;
 }
 
 .login_input {
@@ -2137,7 +2142,16 @@ table td {
     top: 0;
     right: 0;
     margin-right: 8px;
-    font-size: 1rem;
+    line-height: 50px;
+    font-size: 1.6rem;
+    letter-spacing: 0.8rem;
+    color: rgb(31, 71, 158);
+    font-style: italic;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .photo-verification img {
@@ -2208,11 +2222,11 @@ table td {
 }
 
 .r-tip {
-    background: url(../images/r-tips.png) center no-repeat;
+    background: url(../images/r-tips.png?__inline) center no-repeat;
 }
 
 .r-tip1 {
-    background: url(../images/r-tips1.png) center no-repeat;
+    background: url(../images/r-tips1.png?__inline) center no-repeat;
 }
 
 .radio-tip {
@@ -2258,7 +2272,7 @@ table td {
     height: 10px;
     left: 0;
     bottom: 0;
-    background: url(../images/address-b.png) left top repeat-x;
+    background: url(../images/address-b.png?__inline) left top repeat-x;
 }
 
 .radio-chose {
@@ -2381,7 +2395,7 @@ table td {
 }
 
 .scroll-loadding {
-    background: url(../images/loading.gif) center no-repeat;
+    background: url(../images/loading.gif?__inline) center no-repeat;
     display: block;
     width: 100%;
     height: 93px;
@@ -2815,8 +2829,8 @@ footer {
     vertical-align: middle;
     width: 28px;
     height: 28px;
-    background-size: contain;
-    background-image: url(/static/images/cart-img.png);
+    background-size: 78%;
+    background-image: url(../images/cart-img.png?__inline);
     background-position: center;
     background-repeat: no-repeat;
 }
@@ -2839,11 +2853,11 @@ footer {
 }
 
 .up-arrow {
-    background-image: url(../images/up-arrow.png);
+    background-image: url(../images/up-arrow.png?__inline);
 }
 
 .down-arrow {
-    background-image: url(../images/down-arrow.png);
+    background-image: url(../images/down-arrow.png?__inline);
 }
 
 .small-up-down {
@@ -2945,3 +2959,113 @@ footer {
     flex: 1;
     display: block;
 }
+
+.addr-table th,
+.addr-table td {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.addr-table tr {
+    line-height: 3em;
+}
+
+.vertical-view {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -moz-box-orient: vertical;
+    -moz-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.horizontal-view {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -moz-box-orient: horizontal;
+    -moz-box-direction: normal;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+}
+
+.flex_1 {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+
+.line2ellip {
+    line-height: 1.5em !important;
+    word-break: break-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+
+/***首尾固定，中间滚动 start***/
+
+.scrollview {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.scrollview.direction-vertical {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -moz-box-orient: vertical;
+    -moz-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.scrollview .scroll-wrap {
+    display: block;
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.scrollview.direction-vertical .scroll-wrap,
+.scrollview.direction-vertical .scroll-content {
+    width: 100%;
+}
+
+.scrollview .scroll-content {
+    position: absolute;
+}
+
+
+/***
+<div class="wp100 hp100"></div>
+***/
+
+
+/***首尾固定，中间滚动 end***/

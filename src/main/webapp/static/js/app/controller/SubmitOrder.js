@@ -6,7 +6,6 @@ define([
     var code = base.getUrlParam("code") || "",
         type = base.getUrlParam("type") || "1",
         q = base.getUrlParam("q") || "1",
-        //receiptType = Dict.get("receiptType"),
         contentTmpl = __inline("../ui/submit-order-imgs.handlebars");
     init();
 
@@ -25,38 +24,27 @@ define([
             }
             addListeners();
         }
-
-        // (function() {
-        //     var html = '<option value="0">无</option>';
-        //     for (var rec in receiptType) {
-        //         html += '<option value="' + rec + '">' + receiptType[rec] + '</option>';
-        //     }
-        //     $("#receipt").html(html);
-        // })();
     }
 
     function getAddress() {
-        var url = APIURL + '/user/queryAddresses',
+        var code = "805165",
             config = {
                 "isDefault": ""
             },
             addressTmpl = __inline("../ui/submit-order-address.handlebars");
-        Ajax.get(url, config, true)
+        Ajax.get(code, config)
             .then(function(response) {
                 $("#cont").hide();
                 if (response.success) {
                     var data = response.data,
-                        html1 = "",
-                        len = data.length;;
+                        len = data.length;
                     if (len) {
                         for (var i = 0; i < len; i++) {
                             if (data[i].isDefault == "1") {
                                 break;
                             }
                         }
-                        if (i == len) {
-                            i = 0;
-                        }
+                        i = i == len ? 0 : i;
                         var content = addressTmpl(data[i]);
                         $("#addressDiv").append(content);
                         $("#addressRight").removeClass("hidden");
@@ -78,12 +66,11 @@ define([
     }
 
     function getModel1() {
-        var url = APIURL + '/operators/queryCart';
-        Ajax.get(url, true)
+        var postCode = "808041";
+        Ajax.get(postCode)
             .then(function(response) {
                 if (response.success) {
                     var data = response.data,
-                        html = "",
                         totalCount = 0;
                     if (data.length) {
                         var items = [];
@@ -117,11 +104,11 @@ define([
     }
 
     function getModel() {
-        var url = APIURL + '/commodity/product/info',
+        var postCode = "808022",
             config = {
                 "code": code
             };
-        Ajax.get(url, config)
+        Ajax.get(postCode, config)
             .then(function(response) {
                 if (response.success) {
                     var data = response.data,
@@ -156,26 +143,25 @@ define([
         $("#sbtn").on("click", function() {
             var $a = $("#addressDiv>a");
             if ($a.length) {
-                // if ($("#receiptTitle").val().length > 32) {
-                //     base.showMsg("发票抬头字数必须少于32位");
-                //     return;
-                // }
-                if ($("#apply_note").val().length > 255) {
-                    base.showMsg("买家嘱咐字数必须少于255位");
-                    return;
+                var applyVal = $("#apply_note").val();
+                if(applyVal){
+                    if (applyVal.length > 255) {
+                        base.showMsg("买家嘱咐字数必须少于255位");
+                        return;
+                    }else if(!base.isNotFace(applyVal)){
+                        base.showMsg("买家嘱咐不能包含特殊字符");
+                        return;
+                    }
                 }
-                var url = APIURL + '/operators/submitOrder',
+                var postCode = "808050",
                     config;
                 if (type == 1) {
-                    var tPrice = (+$("#items-cont").find(".item_totalP").text().substr(1)) * 1000;
                     config = {
                         "productCode": code,
                         "quantity": q,
                         "receiver": $a.find(".a-addressee").text(),
                         "reMobile": $a.find(".a-mobile").text(),
                         "reAddress": $a.find(".a-province").text() + $a.find(".a-city").text() + $a.find(".a-district").text() + $a.find(".a-detailAddress").text(),
-                        // "receiptType": ($("#receipt").val() == "0" ? "" : $("#receipt").val()),
-                        // "receiptTitle": $("#receiptTitle").val(),
                         "applyNote": $("#apply_note").val() || ""
                     };
                 } else if (type == 2) {
@@ -184,29 +170,27 @@ define([
                     for (var i = 0, len = $lis.length; i < len; i++) {
                         cartList.push($($lis[i]).attr("modelCode"));
                     }
-                    var config = {
+                    config = {
                         "receiver": $a.find(".a-addressee").text(),
                         "reMobile": $a.find(".a-mobile").text(),
                         "reAddress": $a.find(".a-province").text() + $a.find(".a-city").text() + $a.find(".a-district").text() + $a.find(".a-detailAddress").text(),
-                        // "receiptType": ($("#receipt").val() == "0" ? "" : $("#receipt").val()),
-                        // "receiptTitle": $("#receiptTitle").val(),
                         "applyNote": $("#apply_note").val() || "",
                         "cartCodeList": cartList
                     };
-                    url = APIURL + '/operators/submitCart';
+                    postCode = "808051";
                 } else {
                     base.showMsg("类型错误，无法提交订单");
                     return;
                 }
-                doSubmitOrder(config, url);
+                doSubmitOrder(config, postCode);
             } else {
                 base.showMsg("未选择地址");
             }
         });
     }
 
-    function doSubmitOrder(config, url) {
-        Ajax.post(url, config)
+    function doSubmitOrder(config, postCode) {
+        Ajax.post(postCode, { json: config })
             .then(function(response) {
                 if (response.success) {
                     var code = response.data || response.data.code;

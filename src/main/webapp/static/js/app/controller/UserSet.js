@@ -8,8 +8,7 @@ define([
             location.href = "./login.html?return=" + base.makeReturnUrl();
         } else {
             if (base.isWxLogin()) {
-                var mobile = "";
-                if (mobile = localStorage.getItem("m")) {
+                if (sessionStorage.getItem("m")) {
                     $("#xgsjh").removeClass("hidden");
                 } else {
                     $("#bdsjh").removeClass("hidden");
@@ -23,15 +22,8 @@ define([
 
     function addListeners() {
         $("#loginOut").on("click", function() {
-            $("#loaddingIcon").removeClass("hidden");
-            base.logout()
-                .then(function(res) {
-                    $("#loaddingIcon").addClass("hidden");
-                    location.href = '../home/index.html';
-                }, function(res) {
-                    $("#loaddingIcon").addClass("hidden");
-                    location.href = '../home/index.html';
-                });
+            base.logout();
+            location.href = '../home/index.html';
         });
     }
 });

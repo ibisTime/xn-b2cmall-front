@@ -1,10 +1,10 @@
 /*! artDialog v6.0.5 | https://github.com/aui/artDialog */
-define([], function() {
+define(['jquery'], function($) {
     var css = __inline('ui-dialog.css');
-    $('<style>'+css+'</style>').appendTo('head');
+    $('<style>' + css + '</style>').appendTo('head');
     var __modules__ = {};
 
-    function require (id) {
+    function require(id) {
         var mod = __modules__[id];
         var exports = 'exports';
 
@@ -20,13 +20,13 @@ define([], function() {
         return mod[exports];
     }
 
-    function define (path, fn) {
+    function define(path, fn) {
         __modules__[path] = fn;
     }
 
 
 
-    define("jquery", function () {
+    define("jquery", function() {
         return jQuery;
     });
 
@@ -41,7 +41,7 @@ define([], function() {
      * For details, see: http://www.gnu.org/licenses/lgpl-2.1.html
      */
 
-    define("popup", function (require) {
+    define("popup", function(require) {
 
         var $ = require("jquery");
 
@@ -50,7 +50,7 @@ define([], function() {
         var _isFixed = !_isIE6;
 
 
-        function Popup () {
+        function Popup() {
 
             this.destroyed = false;
 
@@ -89,7 +89,7 @@ define([], function() {
             this.node = this.__popup[0];
             this.backdrop = this.__backdrop[0];
 
-            _count ++;
+            _count++;
         }
 
 
@@ -171,7 +171,7 @@ define([], function() {
              * 显示浮层
              * @param   {HTMLElement, Event}  指定位置（可选）
              */
-            show: function (anchor) {
+            show: function(anchor) {
 
                 if (this.destroyed) {
                     return this;
@@ -227,7 +227,7 @@ define([], function() {
 
                         backdrop
                             .css(backdropCss)
-                            .attr({tabindex: '0'})
+                            .attr({ tabindex: '0' })
                             .on('focus', $.proxy(this.focus, this));
 
                         // 锁定 tab 的焦点操作
@@ -265,14 +265,14 @@ define([], function() {
 
 
             /** 显示模态浮层。参数参见 show() */
-            showModal: function () {
+            showModal: function() {
                 this.modal = true;
                 return this.show.apply(this, arguments);
             },
 
 
             /** 关闭浮层 */
-            close: function (result) {
+            close: function(result) {
 
                 if (!this.destroyed && this.open) {
 
@@ -283,7 +283,7 @@ define([], function() {
                     this.__popup.hide().removeClass(this.className + '-show');
                     this.__backdrop.hide();
                     this.open = false;
-                    this.blur();// 恢复焦点，照顾键盘操作的用户
+                    this.blur(); // 恢复焦点，照顾键盘操作的用户
                     this.__dispatchEvent('close');
                 }
 
@@ -292,7 +292,7 @@ define([], function() {
 
 
             /** 销毁浮层 */
-            remove: function () {
+            remove: function() {
 
                 if (this.destroyed) {
                     return this;
@@ -327,7 +327,7 @@ define([], function() {
 
 
             /** 重置位置 */
-            reset: function () {
+            reset: function() {
 
                 var elem = this.follow;
 
@@ -344,12 +344,12 @@ define([], function() {
 
 
             /** 让浮层获取焦点 */
-            focus: function () {
+            focus: function() {
 
                 var node = this.node;
                 var popup = this.__popup;
                 var current = Popup.current;
-                var index = this.zIndex = Popup.zIndex ++;
+                var index = this.zIndex = Popup.zIndex++;
 
                 if (current && current !== this) {
                     current.blur(false);
@@ -382,7 +382,7 @@ define([], function() {
 
 
             /** 让浮层失去焦点。将焦点退还给之前的元素，照顾视力障碍用户 */
-            blur: function () {
+            blur: function() {
 
                 var activeElement = this.__activeElement;
                 var isBlur = arguments[0];
@@ -405,7 +405,7 @@ define([], function() {
              * @param   {String}    事件类型
              * @param   {Function}  监听函数
              */
-            addEventListener: function (type, callback) {
+            addEventListener: function(type, callback) {
                 this.__getEventListener(type).push(callback);
                 return this;
             },
@@ -416,9 +416,9 @@ define([], function() {
              * @param   {String}    事件类型
              * @param   {Function}  监听函数
              */
-            removeEventListener: function (type, callback) {
+            removeEventListener: function(type, callback) {
                 var listeners = this.__getEventListener(type);
-                for (var i = 0; i < listeners.length; i ++) {
+                for (var i = 0; i < listeners.length; i++) {
                     if (callback === listeners[i]) {
                         listeners.splice(i--, 1);
                     }
@@ -428,7 +428,7 @@ define([], function() {
 
 
             // 获取事件缓存
-            __getEventListener: function (type) {
+            __getEventListener: function(type) {
                 var listener = this.__listener;
                 if (!listener) {
                     listener = this.__listener = {};
@@ -441,21 +441,21 @@ define([], function() {
 
 
             // 派发事件
-            __dispatchEvent: function (type) {
+            __dispatchEvent: function(type) {
                 var listeners = this.__getEventListener(type);
 
                 if (this['on' + type]) {
                     this['on' + type]();
                 }
 
-                for (var i = 0; i < listeners.length; i ++) {
+                for (var i = 0; i < listeners.length; i++) {
                     listeners[i].call(this);
                 }
             },
 
 
             // 对元素安全聚焦
-            __focus: function (elem) {
+            __focus: function(elem) {
                 // 防止 iframe 跨域无权限报错
                 // 防止 IE 不可见元素报错
                 try {
@@ -468,8 +468,8 @@ define([], function() {
 
 
             // 获取当前焦点的元素
-            __getActive: function () {
-                try {// try: ie8~9, iframe #26
+            __getActive: function() {
+                try { // try: ie8~9, iframe #26
                     var activeElement = document.activeElement;
                     var contentDocument = activeElement.contentDocument;
                     var elem = contentDocument && contentDocument.activeElement || activeElement;
@@ -479,7 +479,7 @@ define([], function() {
 
 
             // 居中浮层
-            __center: function () {
+            __center: function() {
 
                 var popup = this.__popup;
                 var $window = $(window);
@@ -492,7 +492,7 @@ define([], function() {
                 var ow = popup.width();
                 var oh = popup.height();
                 var left = (ww - ow) / 2 + dl;
-                var top = (wh - oh) * 382 / 1000 + dt;// 黄金比例
+                var top = (wh - oh) * 382 / 1000 + dt; // 黄金比例
                 var style = popup[0].style;
 
 
@@ -502,7 +502,7 @@ define([], function() {
 
 
             // 指定位置 @param    {HTMLElement, Event}  anchor
-            __follow: function (anchor) {
+            __follow: function(anchor) {
 
                 var $elem = anchor.parentNode && $(anchor);
                 var popup = this.__popup;
@@ -528,7 +528,7 @@ define([], function() {
                 var $document = $(document);
                 var winWidth = $window.width();
                 var winHeight = $window.height();
-                var docLeft =  $document.scrollLeft();
+                var docLeft = $document.scrollLeft();
                 var docTop = $document.scrollTop();
 
 
@@ -539,7 +539,7 @@ define([], function() {
                 var offset = this.__offset(anchor);
                 var x = offset.left;
                 var y = offset.top;
-                var left =  fixed ? x - docLeft : x;
+                var left = fixed ? x - docLeft : x;
                 var top = fixed ? y - docTop : y;
 
 
@@ -552,8 +552,8 @@ define([], function() {
                 var css = {};
                 var align = this.align.split(' ');
                 var className = this.className + '-';
-                var reverse = {top: 'bottom', bottom: 'top', left: 'right', right: 'left'};
-                var name = {top: 'top', bottom: 'top', left: 'left', right: 'left'};
+                var reverse = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' };
+                var name = { top: 'top', bottom: 'top', left: 'left', right: 'left' };
 
 
                 var temp = [{
@@ -582,7 +582,7 @@ define([], function() {
 
 
                 // 超出可视区域重新适应位置
-                $.each(align, function (i, val) {
+                $.each(align, function(i, val) {
 
                     // 超出右或下边界：使用左或者上边对齐
                     if (temp[i][val] > range[name[val]][1]) {
@@ -605,7 +605,7 @@ define([], function() {
 
 
                 //添加follow的css, 为了给css使用
-                className += align.join('-') + ' '+ this.className+ '-follow';
+                className += align.join('-') + ' ' + this.className + '-follow';
 
                 that.__followSkin = className;
 
@@ -624,7 +624,7 @@ define([], function() {
 
             // 获取元素相对于页面的位置（包括iframe内的元素）
             // 暂时不支持两层以上的 iframe 套嵌
-            __offset: function (anchor) {
+            __offset: function(anchor) {
 
                 var isNode = anchor.parentNode;
                 var offset = isNode ? $(anchor).offset() : {
@@ -637,14 +637,14 @@ define([], function() {
                 var ownerDocument = anchor.ownerDocument;
                 var defaultView = ownerDocument.defaultView || ownerDocument.parentWindow;
 
-                if (defaultView == window) {// IE <= 8 只能使用两个等于号
+                if (defaultView == window) { // IE <= 8 只能使用两个等于号
                     return offset;
                 }
 
                 // {Element: Ifarme}
                 var frameElement = defaultView.frameElement;
                 var $ownerDocument = $(ownerDocument);
-                var docLeft =  $ownerDocument.scrollLeft();
+                var docLeft = $ownerDocument.scrollLeft();
                 var docTop = $ownerDocument.scrollTop();
                 var frameOffset = $(frameElement).offset();
                 var frameLeft = frameOffset.left;
@@ -671,7 +671,7 @@ define([], function() {
 
     });
 
-// artDialog - 默认配置
+    // artDialog - 默认配置
     define("dialog-config", {
 
         /* -----已注释的配置继承自 popup.js，仍可以再这里重新定义它----- */
@@ -738,30 +738,29 @@ define([], function() {
 
         // 模板（使用 table 解决 IE7 宽度自适应的 BUG）
         // js 使用 i="***" 属性识别结构，其余的均可自定义
-        innerHTML:
-        '<div i="dialog" class="ui-dialog">'
-        +       '<div class="ui-dialog-arrow-a"></div>'
-        +       '<div class="ui-dialog-arrow-b"></div>'
-        +       '<table class="ui-dialog-grid">'
-        +           '<tr>'
-        +               '<td i="header" class="ui-dialog-header">'
-        +                   '<button i="close" class="ui-dialog-close">&#215;</button>'
-        +                   '<div i="title" class="ui-dialog-title"></div>'
-        +               '</td>'
-        +           '</tr>'
-        +           '<tr>'
-        +               '<td i="body" class="ui-dialog-body">'
-        +                   '<div i="content" class="ui-dialog-content"></div>'
-        +               '</td>'
-        +           '</tr>'
-        +           '<tr>'
-        +               '<td i="footer" class="ui-dialog-footer">'
-        +                   '<div i="statusbar" class="ui-dialog-statusbar"></div>'
-        +                   '<div i="button" class="ui-dialog-button"></div>'
-        +               '</td>'
-        +           '</tr>'
-        +       '</table>'
-        +'</div>'
+        innerHTML: '<div i="dialog" class="ui-dialog">' +
+            '<div class="ui-dialog-arrow-a"></div>' +
+            '<div class="ui-dialog-arrow-b"></div>' +
+            '<table class="ui-dialog-grid">' +
+            '<tr>' +
+            '<td i="header" class="ui-dialog-header">' +
+            '<button i="close" class="ui-dialog-close">&#215;</button>' +
+            '<div i="title" class="ui-dialog-title"></div>' +
+            '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td i="body" class="ui-dialog-body">' +
+            '<div i="content" class="ui-dialog-content"></div>' +
+            '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td i="footer" class="ui-dialog-footer">' +
+            '<div i="statusbar" class="ui-dialog-statusbar"></div>' +
+            '<div i="button" class="ui-dialog-button"></div>' +
+            '</td>' +
+            '</tr>' +
+            '</table>' +
+            '</div>'
 
     });
 
@@ -774,7 +773,7 @@ define([], function() {
      * This is licensed under the GNU LGPL, version 2.1 or later.
      * For details, see: http://www.gnu.org/licenses/lgpl-2.1.html
      */
-    define("dialog", function (require) {
+    define("dialog", function(require) {
 
         var $ = require("jquery");
         var Popup = require("popup");
@@ -782,7 +781,7 @@ define([], function() {
         var css = defaults.cssUri;
 
 
-// css loader: RequireJS & SeaJS
+        // css loader: RequireJS & SeaJS
         if (css) {
             var fn = require[require.toUrl ? 'toUrl' : 'resolve'];
             if (fn) {
@@ -800,19 +799,19 @@ define([], function() {
         var _count = 0;
         var _expando = new Date() - 0; // Date.now()
         var _isIE6 = !('minWidth' in $('html')[0].style);
-        var _isMobile = 'createTouch' in document && !('onmousemove' in document)
-            || /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
+        var _isMobile = 'createTouch' in document && !('onmousemove' in document) ||
+            /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
         var _isFixed = !_isIE6 && !_isMobile;
 
 
-        var artDialog = function (options, ok, cancel) {
+        var artDialog = function(options, ok, cancel) {
 
             var originalOptions = options = options || {};
 
 
             if (typeof options === 'string' || options.nodeType === 1) {
 
-                options = {content: options, fixed: !_isMobile};
+                options = { content: options, fixed: !_isMobile };
             }
 
 
@@ -881,11 +880,11 @@ define([], function() {
             return artDialog.list[id] = new artDialog.create(options);
         };
 
-        var popup = function () {};
+        var popup = function() {};
         popup.prototype = Popup.prototype;
         var prototype = artDialog.prototype = new popup();
 
-        artDialog.create = function (options) {
+        artDialog.create = function(options) {
             var that = this;
 
             $.extend(this, new Popup());
@@ -898,7 +897,7 @@ define([], function() {
             this._popup = $popup;
 
 
-            $.each(options, function (name, value) {
+            $.each(options, function(name, value) {
                 if (typeof that[name] === 'function') {
                     that[name](value);
                 } else {
@@ -926,7 +925,7 @@ define([], function() {
             this._$('close')
                 .css('display', this.cancel === false ? 'none' : '')
                 .attr('title', this.cancelValue)
-                .on('click', function (event) {
+                .on('click', function(event) {
                     that._trigger('cancel');
                     event.preventDefault();
                 });
@@ -941,27 +940,25 @@ define([], function() {
             if (options.quickClose) {
                 $backdrop
                     .on(
-                    'onmousedown' in document ? 'mousedown' : 'click',
-                    function () {
-                        that._trigger('cancel');
-                        return false;// 阻止抢夺焦点
-                    });
+                        'onmousedown' in document ? 'mousedown' : 'click',
+                        function() {
+                            that._trigger('cancel');
+                            return false; // 阻止抢夺焦点
+                        });
             }
 
 
             // 遮罩设置
-            this.addEventListener('show', function () {
+            this.addEventListener('show', function() {
                 $backdrop.css({
                     opacity: 0,
                     background: options.backdropBackground
-                }).animate(
-                    {opacity: options.backdropOpacity}
-                    , 150);
+                }).animate({ opacity: options.backdropOpacity }, 150);
             });
 
 
             // ESC 快捷键关闭对话框
-            this._esc = function (event) {
+            this._esc = function(event) {
                 var target = event.target;
                 var nodeName = target.nodeName;
                 var rinput = /^input|textarea$/i;
@@ -979,13 +976,13 @@ define([], function() {
             };
 
             $(document).on('keydown', this._esc);
-            this.addEventListener('remove', function () {
+            this.addEventListener('remove', function() {
                 $(document).off('keydown', this._esc);
                 delete artDialog.list[this.id];
             });
 
 
-            _count ++;
+            _count++;
 
             artDialog.oncreate(this);
 
@@ -1098,7 +1095,7 @@ define([], function() {
              * 设置内容
              * @param    {String, HTMLElement}   内容
              */
-            content: function (html) {
+            content: function(html) {
 
                 var $content = this._$('content');
 
@@ -1106,7 +1103,7 @@ define([], function() {
                 if (typeof html === 'object') {
                     html = $(html);
                     $content.empty('').append(html.show());
-                    this.addEventListener('beforeremove', function () {
+                    this.addEventListener('beforeremove', function() {
                         $('body').append(html.hide());
                     });
                     // String
@@ -1122,7 +1119,7 @@ define([], function() {
              * 设置标题
              * @param    {String}   标题内容
              */
-            title: function (text) {
+            title: function(text) {
                 this._$('title').text(text);
                 this._$('header')[text ? 'show' : 'hide']();
                 return this;
@@ -1130,14 +1127,14 @@ define([], function() {
 
 
             /** 设置宽度 */
-            width: function (value) {
+            width: function(value) {
                 this._$('content').css('width', value);
                 return this.reset();
             },
 
 
             /** 设置高度 */
-            height: function (value) {
+            height: function(value) {
                 this._$('content').css('height', value);
                 return this.reset();
             },
@@ -1148,7 +1145,7 @@ define([], function() {
              * @param   {Array, String}
              * Options: value, callback, autofocus, disabled
              */
-            button: function (args) {
+            button: function(args) {
                 args = args || [];
                 var that = this;
                 var html = '';
@@ -1158,9 +1155,9 @@ define([], function() {
 
                 if (typeof args === 'string') {
                     html = args;
-                    number ++;
+                    number++;
                 } else {
-                    $.each(args, function (i, val) {
+                    $.each(args, function(i, val) {
 
                         var id = val.id = val.id || val.value;
                         var style = '';
@@ -1170,24 +1167,24 @@ define([], function() {
                         if (val.display === false) {
                             style = ' style="display:none"';
                         } else {
-                            number ++;
+                            number++;
                         }
 
                         html +=
-                            '<button'
-                            + ' type="button"'
-                            + ' i-id="' + id + '"'
-                            + style
-                            + (val.disabled ? ' disabled' : '')
-                            + (val.autofocus ? ' autofocus class="ui-dialog-autofocus"' : '')
-                            + '>'
-                            +   val.value
-                            + '</button>';
+                            '<button' +
+                            ' type="button"' +
+                            ' i-id="' + id + '"' +
+                            style +
+                            (val.disabled ? ' disabled' : '') +
+                            (val.autofocus ? ' autofocus class="ui-dialog-autofocus"' : '') +
+                            '>' +
+                            val.value +
+                            '</button>';
 
                         that._$('button')
-                            .on('click', '[i-id=' + id +']', function (event) {
+                            .on('click', '[i-id=' + id + ']', function(event) {
                                 var $this = $(this);
-                                if (!$this.attr('disabled')) {// IE BUG
+                                if (!$this.attr('disabled')) { // IE BUG
                                     that._trigger(id);
                                 }
 
@@ -1204,7 +1201,7 @@ define([], function() {
             },
 
 
-            statusbar: function (html) {
+            statusbar: function(html) {
                 this._$('statusbar')
                     .html(html)[html ? 'show' : 'hide']();
 
@@ -1212,13 +1209,13 @@ define([], function() {
             },
 
 
-            _$: function (i) {
+            _$: function(i) {
                 return this._popup.find('[i=' + i + ']');
             },
 
 
             // 触发按钮回调函数
-            _trigger: function (id) {
+            _trigger: function(id) {
                 var fn = this.callbacks[id];
 
                 return typeof fn !== 'function' || fn.call(this) !== false ?
@@ -1234,7 +1231,7 @@ define([], function() {
 
 
         /** 获取最顶层的对话框API */
-        artDialog.getCurrent = function () {
+        artDialog.getCurrent = function() {
             return Popup.current;
         };
 
@@ -1245,10 +1242,10 @@ define([], function() {
          * @param    {String}    对话框 ID
          * @return   {Object}    对话框 API (实例)
          */
-        artDialog.get = function (id) {
-            return id === undefined
-                ? artDialog.list
-                : artDialog.list[id];
+        artDialog.get = function(id) {
+            return id === undefined ?
+                artDialog.list :
+                artDialog.list[id];
         };
 
         artDialog.list = {};

@@ -1,10 +1,9 @@
 define([
     'app/controller/base',
     'app/util/ajax',
-    'lib/swiper-3.3.1.jquery.min'
+    'swiper'
 ], function(base, Ajax, Swiper) {
-    var mySwiper, rspData = [],
-        quantity = 0,
+    var quantity = 0,
         code = base.getUrlParam("code") || "";
     init();
 
@@ -13,19 +12,16 @@ define([
     }
 
     function getProduct() {
-        Ajax.get(APIURL + '/commodity/product/info', {
-                code: code
-            }, true)
+        Ajax.get('808022', { code: code })
             .then(function(res) {
                 getKeys();
                 if (res.success) {
                     var data = res.data,
-                        imgs_html = "";
-                    var $swiper = $("#btlImgs");
-                    imgs_html = '<div class="swiper-slide tc"><img src="' + data.pic1 + '"></div>' +
-                        '<div class="swiper-slide tc"><img src="' + data.pic2 + '"></div>' +
-                        '<div class="swiper-slide tc"><img src="' + data.pic3 + '"></div>' +
-                        '<div class="swiper-slide tc"><img src="' + data.pic4 + '"></div>';
+                        $swiper = $("#btlImgs"),
+                        imgs_html = '<div class="swiper-slide tc"><img src="' + data.pic1 + '"></div>' +
+                            '<div class="swiper-slide tc"><img src="' + data.pic2 + '"></div>' +
+                            '<div class="swiper-slide tc"><img src="' + data.pic3 + '"></div>' +
+                            '<div class="swiper-slide tc"><img src="' + data.pic4 + '"></div>';
                     $swiper.html(imgs_html);
                     swiperImg();
                     $("#btr-name").text(data.name);
@@ -53,39 +49,56 @@ define([
                     addListeners();
                     $("#cont").remove();
                 } else {
-                    doError();
+                    base.showMsg("暂时无法获取商品信息");
                 }
             }, function() {
                 getKeys();
-                doError();
+                base.showMsg("暂时无法获取商品信息");
             });
     }
 
     function getKeys() {
         var compCode = sessionStorage.getItem("compCode");
         if (compCode) {
-            $.when(
-                Ajax.get(APIURL + "/gene/info/key", { key: "yunfei", companyCode: compCode }),
-                Ajax.get(APIURL + "/gene/info/key", { key: "byje", companyCode: compCode })
-            ).then(function(res1, res2) {
-                res1 = res1[0];
-                res2 = res2[0];
-                if (res1.success && res2.success) {
-                    $("#yunfei").text(res1.data);
-                    $("#byje").text(res2.data);
-                } else {
-                    base.showMsg("获取库存和运费信息失败！");
-                }
-            }, function() {
-                base.showMsg("获取库存和运费信息失败！");
-            });
+            getKcYf(compCode);
+        } else {
+            base.getCompanyByUrl()
+                .then(function() {
+                    if (compCode = sessionStorage.getItem("compCode")) {
+                        getKcYf(compCode);
+                    } else {
+                        base.showMsg("库存和运费信息获取失败！");
+                    }
+                });
         }
     }
 
+    function getKcYf(compCode) {
+        Ajax.get("808917", { key: "yunfei", companyCode: compCode })
+            .then(function(res) {
+                if (res.success) {
+                    $("#yunfei").text(res.data);
+                } else {
+                    base.showMsg("运费信息获取失败！");
+                }
+            }, function() {
+                base.showMsg("运费信息获取失败！");
+            });
+        Ajax.get("808917", { key: "byje", companyCode: compCode })
+            .then(function(res) {
+                if (res.success) {
+                    $("#byje").text(res.data);
+                } else {
+                    base.showMsg("包邮金额获取失败！");
+                }
+            }, function() {
+                base.showMsg("包邮金额获取失败！");
+            });
+    }
+
     function swiperImg() {
-        var mySwiper = new Swiper('.swiper-container', {
+        new Swiper('.swiper-container', {
             direction: 'horizontal',
-            // 如果需要分页器
             pagination: '.swiper-pagination'
         });
     }
@@ -157,8 +170,8 @@ define([
                 productCode: code,
                 quantity: $("#buyCount").val()
             },
-            url = APIURL + '/operators/add2Cart';
-        Ajax.post(url, config)
+            postCode = "808030";
+        Ajax.post(postCode, { json: config })
             .then(function(response) {
                 var msg;
                 if (response.success) {

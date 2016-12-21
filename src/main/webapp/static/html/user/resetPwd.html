@@ -7,22 +7,22 @@
 </head>
 
 <body class="bg_f5">
-    <div class="m20">
+    <form id="resetForm" class="m20">
         <div class="mt10 bg_fff login_input b_e6_tb b_e6_lr">
             <div class="wp100 b_e6_b p_r">
-                <div class="l_icon tc"><img class="va-m" src="../../images/p-icon.png" /></div>
-                <input placeholder="输入原密码" type="password" id="origPassword" />
+                <div class="l_icon tc"><img class="va-m" src="../../images/p-icon.png?__inline" /></div>
+                <input placeholder="输入原密码" type="password" id="origPassword" name="origPassword" />
             </div>
             <div class="wp100 b_e6_b p_r">
-                <div class="l_icon tc"><img class="va-m" src="../../images/p-icon.png" /></div>
-                <input placeholder="输入新密码" type="password" id="password" />
+                <div class="l_icon tc"><img class="va-m" src="../../images/p-icon.png?__inline" /></div>
+                <input placeholder="输入新密码" type="password" id="password" name="password" />
                 <div class="register_verifycon">
                     <p>密码长度6~16位，可以是数字、字母和任意字符</p>
                 </div>
             </div>
             <div class="wp100 p_r">
-                <div class="l_icon tc"><img class="va-m" src="../../images/p-icon.png" /></div>
-                <input placeholder="再次输入新密码" type="password" id="repassword" />
+                <div class="l_icon tc"><img class="va-m" src="../../images/p-icon.png?__inline" /></div>
+                <input placeholder="再次输入新密码" type="password" id="repassword" name="repassword" />
                 <div class="register_verifycon">
                     <p>密码长度6~16位，可以是数字、字母和任意字符</p>
                 </div>
@@ -33,7 +33,7 @@
                 <input type="button" class="lh3em wp100 bg_f64444 t_white b_radius4 s_15" value="设置" id="sbtn" />
             </div>
         </div>
-    </div>
+    </form>
     <link rel="import" href="../footer.html?__inline">
     <script>
         require(['app/controller/ResetPwd']);

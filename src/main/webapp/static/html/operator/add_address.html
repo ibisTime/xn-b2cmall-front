@@ -7,55 +7,43 @@
 </head>
 
 <body class="bg_f5">
-    <div class="wp100">
+    <form id="addForm" class="wp100">
         <div class="bg_fff">
             <table class="wp100 addr-table s_14">
                 <tr>
                     <th class="wp30">收货人：</th>
                     <td class="wp70 p_r">
-                        <input class="s_14" placeholder="真实姓名" type="text" id="accept_name" />
-                        <span class="warning top_4">姓名不能为空</span>
-                        <span class="warning top_4">长度不能超过20位</span>
+                        <input class="s_14" placeholder="真实姓名" type="text" id="accept_name" name="accept_name" />
                     </td>
                 </tr>
                 <tr>
                     <th class="wp30">手机号码：</th>
                     <td class="wp70 p_r">
-                        <input class="s_14" placeholder="手机号" type="tel" id="mobile" />
-                        <span class="warning top_4">手机号不能为空</span>
-                        <span class="warning top_4">格式错误</span>
+                        <input class="s_14" placeholder="手机号" type="tel" id="mobile" name="mobile" />
                     </td>
                 </tr>
                 <tr>
                     <th class="wp30">省份：</th>
                     <td class="wp70 p_r">
-                        <input class="s_14" placeholder="省份" type="text" id="provinceCode" />
-                        <span class="warning top_4">省份不能为空</span>
-                        <span class="warning top_4">长度不能超过20位</span>
+                        <input class="s_14" placeholder="省份" type="text" id="provinceCode" name="provinceCode"/>
                     </td>
                 </tr>
                 <tr>
                     <th class="wp30">城市：</th>
                     <td class="wp70 p_r">
-                        <input class="s_14" placeholder="城市" type="text" id="cityCode" />
-                        <span class="warning top_4">城市不能为空</span>
-                        <span class="warning top_4">长度不能超过20位</span>
+                        <input class="s_14" placeholder="城市" type="text" id="cityCode" name="cityCode"/>
                     </td>
                 </tr>
                 <tr>
                     <th class="wp30">区/县：</th>
                     <td class="wp70 p_r">
-                        <input class="s_14" placeholder="区/县" type="text" id="districtCode" />
-                        <span class="warning top_4">区/县不能为空</span>
-                        <span class="warning top_4">长度不能超过20位</span>
+                        <input class="s_14" placeholder="区/县" type="text" id="districtCode" name="districtCode"/>
                     </td>
                 </tr>
                 <tr>
                     <th class="wp30">街道地址：</th>
                     <td class="wp70 p_r">
-                        <input class="s_14" placeholder="街道地址" type="text" id="street" />
-                        <span class="warning top_4">街道地址不能为空</span>
-                        <span class="warning top_4">长度不能超过128位</span>
+                        <input class="s_14" placeholder="街道地址" type="text" id="street" name="street"/>
                     </td>
                 </tr>
             </table>
@@ -64,7 +52,7 @@
         <div class="fixft bg_fff b_bd_t s_15 tc lh3em">
             <div class="wp100 bg_f64444 t_white" id="sbtn">保存地址</div>
         </div>
-    </div>
+    </form>
     <i id="loaddingIcon" class="icon-loading bg_0005 top_0 bg_pc"></i>
     <link rel="import" href="../footer.html?__inline">
     <script>

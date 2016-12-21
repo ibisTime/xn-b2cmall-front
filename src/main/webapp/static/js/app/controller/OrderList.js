@@ -2,8 +2,8 @@ define([
     'app/controller/base',
     'app/util/ajax',
     'app/util/dict'
-], function(base, Ajax, Dict) {
-    $(function() {
+], function (base, Ajax, Dict) {
+    $(function () {
         var config = {
                 status: "",
                 limit: 15,
@@ -28,7 +28,7 @@ define([
         }
 
         function addListeners() {
-            $("#status_ul").on("click", "li", function(e) {
+            $("#status_ul").on("click", "li", function (e) {
                 config.start = 1;
                 $("#status_ul").find("li.active").removeClass("active");
                 var status = $(this).addClass("active").attr("status");
@@ -43,15 +43,14 @@ define([
                 getOrderList();
                 e.stopPropagation();
             });
-            $(window).on("scroll", function() {
-                var me = $(this);
+            $(window).on("scroll", function () {
                 if (canScrolling && !isEnd && ($(document).height() - $(window).height() - 10 <= $(document).scrollTop())) {
                     canScrolling = false;
                     addLoading();
                     getOrderList();
                 }
             });
-            $("#ol-ul").on("click", "li span.ol-tobuy", function(e) {
+            $("#ol-ul").on("click", "li span.ol-tobuy", function (e) {
                 e.stopPropagation();
                 e.preventDefault();
                 var me = $(this);
@@ -60,8 +59,8 @@ define([
         }
 
         function getOrderList() {
-            Ajax.get(APIURL + "/operators/queryPageOrders", config)
-                .then(function(response) {
+            Ajax.get("808070", config)
+                .then(function (response) {
                     if (response.success) {
                         var data = response.data,
                             html = "",
@@ -71,7 +70,7 @@ define([
                             isEnd = true;
                         }
                         if (curList.length) {
-                            curList.forEach(function(cl) {
+                            curList.forEach(function (cl) {
                                 var invoices = cl.productOrderList,
                                     code = cl.code;
                                 html += '<li class="clearfix b_bd_b b_bd_t bg_fff mt10" code="' + code + '">' +
@@ -127,7 +126,7 @@ define([
                         }
                     }
                     first = false;
-                }, function() {
+                }, function () {
                     if (first) {
                         doError();
                     } else {

@@ -20,6 +20,7 @@ define([
                 location.href = "../user/login.html?return=" + base.makeReturnUrl();
             } else {
                 queryFundDetails();
+                addListeners();
             }
         }
 
@@ -35,8 +36,7 @@ define([
             if (!first) {
                 addLoading();
             }
-            var url = APIURL + "/account/detail/page";
-            Ajax.get(url, config, true)
+            Ajax.get("805310", config)
                 .then(function(response) {
                     if (response.success) {
                         var data = response.data,
@@ -48,7 +48,7 @@ define([
                         if (list.length) {
                             var html = "";
                             list.forEach(function(ll) {
-                                var flag = +ll.transAmount >= 0 ? true : false,
+                                var flag = +ll.transAmount >= 0 ,
                                     t_class = flag && "t_f64444" || "t_21b504",
                                     prev_f = flag && "+" || "";
 
@@ -107,7 +107,6 @@ define([
 
         function addListeners() {
             $(window).on("scroll", function() {
-                var me = $(this);
                 if (canScrolling && !isEnd && ($(document).height() - $(window).height() - 10 <= $(document).scrollTop())) {
                     canScrolling = false;
                     queryFundDetails();

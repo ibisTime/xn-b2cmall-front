@@ -1,13 +1,15 @@
 define([
     'app/controller/base',
     'app/util/ajax',
-    'lib/swiper-3.3.1.jquery.min'
-], function(base, Ajax, Swiper) {
+    'app/util/validate',
+    'app/module/foot/foot'
+], function(base, Ajax, Validate, Foot) {
     var returnUrl, COMPANYCODE;
 
     init();
 
     function init() {
+        Foot.addFoot();
         if (COMPANYCODE = sessionStorage.getItem("compCode")) {
             addListeners();
         } else {
@@ -33,6 +35,22 @@ define([
     }
 
     function addListeners() {
+        $("#loginForm").validate({
+            'rules': {
+                mobile: {
+                    required: true,
+                    mobile: true
+                },
+                password: {
+                    required: true,
+                    maxlength: 16,
+                    minlength: 6,
+                    isNotFace: true
+                }
+            },
+            onkeyup: false
+        });
+
         $("#loginBtn").on('click', loginAction);
 
         $("#wechat").on("click", function() {
@@ -57,58 +75,28 @@ define([
         });
     }
 
-    function validate_username() {
-        var value = $("#mobile").val();
-        if (value == "") {
-            base.showMsg("手机号不能为空");
-            return false;
-        } else if (!/^1[3,4,5,7,8]\d{9}$/.test(value)) {
-            base.showMsg("手机号格式错误");
-            return false;
-        }
-        return true;
-    }
-
-    function validate_password() {
-        var password = $("#password").val();
-        if (password == "") {
-            base.showMsg("密码不能为空");
-            return false;
-        }
-        return true;
-    }
-
-    function validate() {
-        if (validate_username() && validate_password()) {
-            return true;
-        }
-        return false;
-    }
-
     function loginAction() {
-        if (validate()) {
+        if ($("#loginForm").valid()) {
             $("#loginBtn").attr("disabled", "disabled").val("登录中...");
             var param = {
-                    "loginName": $("#mobile").val(),
-                    "loginPwd": $("#password").val(),
-                    "companyCode": COMPANYCODE
-                },
-                url = APIURL + "/user/login";
+                "loginName": $("#mobile").val(),
+                "loginPwd": $("#password").val(),
+                "companyCode": COMPANYCODE,
+                "kind": "f1"
+            };
 
-            Ajax.post(url, param)
-                .then(function(response) {
-                    if (response.success) {
-                        localStorage.setItem("user", true);
-                        //不是微信登录
-                        localStorage.removeItem("kind");
+            Ajax.post("805043", { json: param })
+                .then(function(res) {
+                    if (res.success) {
+                        base.setCommonSessionUser(res);
                         base.goBackUrl("./user_info.html");
                     } else {
-                        localStorage.setItem("user", false);
+                        base.clearSessionUser();
                         $("#loginBtn").removeAttr("disabled").val("登录");
-                        base.showMsg(response.msg);
+                        base.showMsg(res.msg);
                     }
                 }, function() {
-                    localStorage.setItem("user", false);
+                    base.clearSessionUser();
                     $("#loginBtn").removeAttr("disabled").val("登录");
                     base.showMsg("登录失败");
                 });

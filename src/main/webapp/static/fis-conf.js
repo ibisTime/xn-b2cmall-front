@@ -2,7 +2,10 @@ fis.hook('amd', {
     baseUrl: "./js",
     paths: {
         'Handlebars': 'lib/handlebars.runtime-v3.0.3',
-        'IScroll': "lib/iscroll"
+        'IScroll': "lib/iscroll",
+        'jValidate': "lib/jquery.validate",
+        'jquery': "lib/jquery-2.1.4",
+        'swiper': "lib/swiper/swiper-3.3.1.jquery.min"
     },
     shim: {
         "Iscroll": {
@@ -15,9 +18,9 @@ fis.match('*.{js,css}', {
 });
 
 fis.match('*', {
-    release: '/static/$0'
+    release: '/static/$0',
+    useMap: true
 });
-
 fis.match('*.html', {
     release: '/$0'
 });
@@ -30,23 +33,36 @@ fis.match('*.handlebars', {
     }),
     release: false // handlebars 源文件不需要编译
 });
-
 fis.match('::package', {
     postpackager: fis.plugin('loader', {
-        allInOne: true,
         sourceMap: true,
         useInlineMap: true
     })
 });
-
-fis.media("prod").match("**.js", {
-    optimizer: fis.plugin('uglify-js')
+fis.match('/js/module/**.js', {
+    isMod: true
 });
-
-fis.media("prod").match("**.css", {
-    optimizer: fis.plugin('clean-css')
-});
-
-fis.media('prod').match('*.png', {
-    optimizer: fis.plugin('png-compressor')
-});
+fis.media("prod")
+    .match('::package', {
+        postpackager: fis.plugin('loader', {
+            allInOne: {
+                includeAsyncs: true
+            }
+        })
+    })
+    .match('{/js/lib/*.js,/js/app/util/*.js,/js/app/controller/base.js}', {
+        requires: ['/js/require.js'],
+        packTo: '/pkg/common.js'
+    })
+    .match('/js/require.js', {
+        packTo: '/pkg/common.js'
+    })
+    .match("**.js", {
+        optimizer: fis.plugin('uglify-js')
+    })
+    .match("**.css", {
+        optimizer: fis.plugin('clean-css')
+    })
+    .match('**.png', {
+        optimizer: fis.plugin('png-compressor')
+    });

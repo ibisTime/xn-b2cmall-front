@@ -40,16 +40,17 @@ define([
         Ajax.get(APIURL + "/auth2/login/wx", param)
             .then(function(res) {
                 if (res.success) {
-                    localStorage.setItem("user", true);
-                    localStorage.setItem("kind", "wx");
+                    base.setWxSessionUser(res);
                     location.href = "./user_info.html";
                 } else {
+                    base.clearSessionUser();
                     $("#loaddingIcon").remove();
                     base.showMsg(res.msg);
                     error();
                 }
             }, function() {
                 $("#loaddingIcon").remove();
+                base.clearSessionUser();
                 base.showMsg("非常抱歉，微信授权失败!");
                 error();
             });

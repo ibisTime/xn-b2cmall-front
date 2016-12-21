@@ -7,15 +7,15 @@
 </head>
 
 <body class="bg_f5">
-    <div class="p20">
+    <form class="p20" id="loginForm">
         <div class="bg_fff login_input b_e6">
             <div class="wp100 b_e6_b p_r">
-                <div class="l_icon tc"><img class="va-m" src="../../images/m-icon.png" /></div>
-                <input placeholder="请输入手机号码" type="tel" id="mobile" />
+                <div class="l_icon tc"><img class="va-m" src="../../images/m-icon.png?__inline" /></div>
+                <input placeholder="请输入手机号码" type="tel" id="mobile" name="mobile" />
             </div>
             <div class="wp100 p_r">
-                <div class="l_icon tc"><img class="va-m" src="../../images/p-icon.png" /></div>
-                <input placeholder="请输入密码" type="password" id="password" />
+                <div class="l_icon tc"><img class="va-m" src="../../images/p-icon.png?__inline" /></div>
+                <input placeholder="请输入密码" type="password" id="password" name="password" />
             </div>
         </div>
         <div class="mt30">
@@ -33,28 +33,10 @@
                 <span class="" id="comName">第三方登录</span>
                 <span class="dottedtop"></span>
             </div>
-            <img id="wechat" class="wp44p" src="../../images/wechat.png">
+            <img id="wechat" class="wp44p" src="../../images/wechat.png?__inline">
         </div>
-    </div>
+    </form>
     <i id="loading" class="icon-loading4 hidden"></i>
-    <footer class="fixft bg_fff b_bd_t hfoot s_12">
-        <a href="../home/index.html" class="wp25 fl tc">
-            <div class="wp100 pt8"><img src="../../images/hf1.png" /></div>
-            <p class="ptb2">首页</p>
-        </a>
-        <a href="../detail/mall_list.html" class="wp25 fl tc">
-            <div class="wp100 pt8"><img src="../../images/hf2.png" /></div>
-            <p class="ptb2">产品分类</p>
-        </a>
-        <a href="./cart.html" class="wp25 fl tc">
-            <div class="wp100 pt8"><img src="../../images/hf3.png" /></div>
-            <p class="ptb2">购物车</p>
-        </a>
-        <a href="./user_info.html" class="wp25 fl tc">
-            <div class="wp100 pt8"><img src="../../images/hf4.png" /></div>
-            <p class="ptb2">个人中心</p>
-        </a>
-    </footer>
     <link rel="import" href="../footer.html?__inline">
     <script>
         require(['app/controller/Login']);

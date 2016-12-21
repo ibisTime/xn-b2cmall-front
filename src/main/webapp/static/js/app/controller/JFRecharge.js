@@ -18,7 +18,9 @@ define([
                 location.href = "../home/index.html";
             }, 1500);
         } else {
-            Ajax.post(APIURL + "/user/coupon/add", { couponCode: code })
+            Ajax.post("805321", {
+                    json: { couponCode: code }
+                })
                 .then(function(res) {
                     $("#loading").remove();
                     if (res.success) {

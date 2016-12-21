@@ -1,36 +1,8 @@
 define([
-    'app/util/common',
+    'jquery',
     'app/util/ajax',
     'app/util/dialog'
-], function(common, Ajax, dialog) {
-
-    //FastClick.attach(document.body);
-
-    // element disabled
-    $.fn.disable = function() {
-        this.addClass('disabled');
-        this[0].disabled = true;
-    };
-
-    $.fn.enable = function() {
-        this.removeClass('disabled');
-        this[0].disabled = false;
-    };
-
-    $.fn.tap = function(callback) {
-        this.addClass('btn_press');
-        this.on('click', function() {
-            callback(this);
-        });
-    };
-
-    // setData
-    $.fn.setData = function(data) {
-        var data = data || {};
-        for (var k in data) {
-            $('[data-name=' + k + ']', this).html(data[k]);
-        }
-    };
+], function($, Ajax, dialog) {
 
     if (Number.prototype.toFixed) {
         var ori_toFixed = Number.prototype.toFixed;
@@ -86,13 +58,6 @@ define([
         return o;
     };
     var Base = {
-        staticUrl: requirejs.staticUrl,
-        back: window.history.back,
-        loadAllTpl: '<div class="all-bar tc bg_fff ptb4"><span class="sr-only">已加载全部</span></div>',
-        loadingTpl: '<div class="loading-bar tc"><i class="fa fa-spinner fa-spin fa-3x fa-fw margin-bottom"></i><span class="sr-only">努力加载中...</span></div>',
-        loadEmptyTpl: '<div class="flex flex-c flex-dv t_bd hp100"><i class="s_50 fa fa-calendar-o" aria-hidden="true"></i><span class="mt10">暂无相关数据</span></div>',
-        loading100Tpl: '<div class="flex flex-c flex-dv hp100 loading-bar"><img src="' + requirejs.staticUrl + '/images/pull.gif"/><span class="sr-only">努力加载中...</span></div>',
-        // simple encrypt information with ***
         encodeInfo: function(info, headCount, tailCount, space) {
             headCount = headCount || 0;
             tailCount = tailCount || 0;
@@ -146,6 +111,45 @@ define([
             }
             return t.split("").reverse().join("") + (n == 0 ? "" : ("." + r)) + unit;
         },
+        isNotFace: function(value) {
+            var pattern = /^[\s0-9a-zA-Z\u4e00-\u9fa5\u00d7\u300a\u2014\u2018\u2019\u201c\u201d\u2026\u3001\u3002\u300b\u300e\u300f\u3010\u3011\uff01\uff08\uff09\uff0c\uff1a\uff1b\uff1f\uff0d\uff03\uffe5\x21-\x7e]*$/;
+            return pattern.test(value)
+        },
+        calculateSecurityLevel: function(password) {
+            var strength_L = 0;
+            var strength_M = 0;
+            var strength_H = 0;
+
+            for (var i = 0; i < password.length; i++) {
+                var code = password.charCodeAt(i);
+                // 数字
+                if (code >= 48 && code <= 57) {
+                    strength_L++;
+                    // 小写字母 大写字母
+                } else if ((code >= 65 && code <= 90) ||
+                    (code >= 97 && code <= 122)) {
+                    strength_M++;
+                    // 特殊符号
+                } else if ((code >= 32 && code <= 47) ||
+                    (code >= 58 && code <= 64) ||
+                    (code >= 94 && code <= 96) ||
+                    (code >= 123 && code <= 126)) {
+                    strength_H++;
+                }
+            }
+            // 弱
+            if ((strength_L == 0 && strength_M == 0) ||
+                (strength_L == 0 && strength_H == 0) ||
+                (strength_M == 0 && strength_H == 0)) {
+                return "1";
+            }
+            // 强
+            if (0 != strength_L && 0 != strength_M && 0 != strength_H) {
+                return "3";
+            }
+            // 中
+            return "2";
+        },
         showMsg: function(msg, time) {
             var d = dialog({
                 content: msg,
@@ -181,34 +185,43 @@ define([
             }
         },
         isWxLogin: function() {
-            if (Base.isLogin() && localStorage.getItem("kind") == "wx") {
+            if (Base.isLogin() && sessionStorage.getItem("kind") == "wx") {
                 return true;
             }
             return false;
         },
         isLogin: function() {
-            return localStorage.getItem("user") ? true : false;
+            return sessionStorage.getItem("user") ? true : false;
         },
-        getUser: function(flag) {
-            return Ajax.get(APIURL + '/user');
+        getUser: function() {
+            return Ajax.get("805056");
+        },
+        getUserId: function() {
+            return sessionStorage.getItem("user");
+        },
+        setCommonSessionUser: function(res) {
+            sessionStorage.setItem("user", res.data.userId);
+            sessionStorage.setItem("tk", res.data.token);
+            sessionStorage.removeItem("kind");
+        },
+        setWxSessionUser: function(res) {
+            sessionStorage.setItem("user", res.data.userId);
+            sessionStorage.setItem("tk", res.data.token);
+            sessionStorage.setItem("kind", "wx");
         },
         //清除sessionStorage中和用户相关的数据
         clearSessionUser: function() {
-            localStorage.removeItem("user");
+            sessionStorage.removeItem("user"); //userId
+            sessionStorage.removeItem("tk"); //token
+            sessionStorage.removeItem("kind"); //是否微信登录
+            sessionStorage.removeItem("m"); //手机号
         },
         //登出
         logout: function() {
-            return Ajax.post(APIURL + "/user/logout")
-                .then(function(res) {
-                    Base.clearSessionUser();
-                    return res;
-                }, function(res) {
-                    Base.clearSessionUser();
-                    return res;
-                });
+            Base.clearSessionUser();
         },
         getBanner: function(code, location) {
-            return Ajax.get(APIURL + '/navigate/banner/list', { "companyCode": code, "location": location });
+            return Ajax.get("806051", { "companyCode": code, "location": location, "type": "2" });
         },
         getDomain: function() {
             var url = location.href;
@@ -220,13 +233,14 @@ define([
         },
         getCompanyByUrl: function() {
             var url = Base.getDomain();
-            return Ajax.get(APIURL + '/gene/byUrl', { "url": url })
+            //return Ajax.get(APIURL + '/gene/byUrl', { "url": url })
+            return Ajax.get("806015", { "domain": url })
                 .then(function(res) {
                     if (res.success && !$.isEmptyObject(res.data)) {
                         sessionStorage.setItem("compCode", res.data.code);
-                        sessionStorage.setItem("icon", res.data.icon);
-                        sessionStorage.setItem("sTime", res.data.remark);
-                        sessionStorage.setItem("sMobile", res.data.mobile);
+                        sessionStorage.setItem("icon", res.data.icon || "");
+                        sessionStorage.setItem("sTime", res.data.remark || "");
+                        sessionStorage.setItem("sMobile", res.data.mobile || "");
                         Base.addIcon();
                     }
                     return res;
@@ -236,7 +250,7 @@ define([
             return this.getCompanyByUrl();
         },
         getGgContent: function(code) {
-            return Ajax.get(APIURL + "/gene/broadcast/info", { code: code });
+            return Ajax.get("805132", { code: code });
         }
     };
     Base.addIcon();

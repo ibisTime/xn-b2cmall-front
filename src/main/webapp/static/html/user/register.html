@@ -7,25 +7,29 @@
 </head>
 
 <body class="bg_f5">
-    <div class="p20">
+    <form id="registForm" class="p20">
         <div class="bg_fff login_input b_bd">
             <div class="wp100 b_e6_b">
-                <div class="l_icon tc"><img class="va-m" src="../../images/m-icon.png" /></div>
-                <input placeholder="请输入手机号码" type="tel" id="mobile" />
+                <div class="l_icon tc"><img class="va-m" src="../../images/m-icon.png?__inline" /></div>
+                <input placeholder="请输入手机号码" type="tel" id="mobile" name="mobile" />
             </div>
             <div class="wp100 b_e6_b">
-                <div class="l_icon tc"><img class="va-m" src="../../images/pt-icon.png" /></div>
-                <input type="text" placeholder="请输入验证码" id="captcha" class="pr110p">
-                <div class="photo-verification"><img id="captchaImg" src="#" alt="图片验证码" /></div>
+                <div class="l_icon tc"><img class="va-m" src="../../images/pt-icon.png?__inline" /></div>
+                <div class="pr110p">
+                    <div class="p_r"><input type="text" placeholder="请输入验证码" id="captcha" name="captcha"></div>
+                </div>
+                <div class="photo-verification" id="captchaImg"></div>
             </div>
             <div class="wp100 b_e6_b">
-                <div class="l_icon tc"><img class="va-m" src="../../images/v-icon.png" /></div>
-                <input type="number" placeholder="短信验证码" class="pr110p" id="verification" />
+                <div class="l_icon tc"><img class="va-m" src="../../images/v-icon.png?__inline" /></div>
+                <div class="pr110p">
+                    <div class="p_r"><input type="number" placeholder="短信验证码" id="verification" name="verification" /></div>
+                </div>
                 <div class="mobile-verification"><input type="button" class="smsBtn" id="getVerification" value="获取验证码" /></div>
             </div>
             <div class="wp100 b_e6_b">
-                <div class="l_icon tc"><img class="va-m" src="../../images/p-icon.png" /></div>
-                <input placeholder="请输入密码" type="password" id="password" />
+                <div class="l_icon tc"><img class="va-m" src="../../images/p-icon.png?__inline" /></div>
+                <input placeholder="请输入密码" type="password" id="password" name="password" />
                 <div class="register_verifycon">
                     <p>密码长度6~16位，可以是数字、字母和任意字符</p>
                 </div>
@@ -37,7 +41,7 @@
             </div>
             <div class="tc mt10 pt10 s_12 wp100 b_bd_t">如果你已拥有账户，则可在此<a id="toLogin" href="#" class="registerA">登录</a></div>
         </div>
-    </div>
+    </form>
     <link rel="import" href="../footer.html?__inline">
     <script>
         require(['app/controller/Register']);

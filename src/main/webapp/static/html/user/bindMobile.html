@@ -7,15 +7,19 @@
 </head>
 
 <body class="bg_f5">
-    <div class="m20">
+    <form id="bindForm" class="m20">
         <div class="mt10 bg_fff login_input b_e6">
             <div class="wp100 b_e6_b">
-                <div class="l_icon tc"><img class="va-m" src="../../images/m-icon.png" /></div>
-                <input placeholder="输入手机号码" type="tel" id="mobile" />
+                <div class="l_icon tc"><img class="va-m" src="../../images/m-icon.png?__inline" /></div>
+                <input placeholder="输入手机号码" type="tel" id="mobile" name="mobile" />
             </div>
             <div class="wp100 b_e6_b">
-                <div class="l_icon tc"><img class="va-m" src="../../images/v-icon.png" /></div>
-                <input type="number" placeholder="短信验证码" class="pr110p" id="verification" />
+                <div class="l_icon tc"><img class="va-m" src="../../images/v-icon.png?__inline" /></div>
+                <div class="pr110p">
+                    <div class="p_r">
+                        <input type="number" placeholder="短信验证码" id="verification" name="verification" />
+                    </div>
+                </div>
                 <div class="mobile-verification"><input type="button" class="smsBtn" id="getVerification" value="获取验证码" /></div>
             </div>
         </div>
@@ -24,7 +28,7 @@
                 <input type="button" class="lh3em wp100 bg_f64444 t_white b_radius4 s_15" value="设置" id="sbtn" />
             </div>
         </div>
-    </div>
+    </form>
     <link rel="import" href="../footer.html?__inline">
     <script>
         require(['app/controller/BindMobile']);

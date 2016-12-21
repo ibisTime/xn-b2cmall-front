@@ -1,8 +1,9 @@
 define([
     'app/controller/base',
     'app/util/ajax',
-    'IScroll'
-], function(base, Ajax, IScroll) {
+    'IScroll',
+    'app/module/foot/foot'
+], function(base, Ajax, IScroll, Foot) {
     var first = true,
         COMPANYCODE = "",
         bigCode = base.getUrlParam("b") || "",
@@ -19,6 +20,7 @@ define([
     init();
 
     function init() {
+        Foot.addFoot(1);
         if (COMPANYCODE = sessionStorage.getItem("compCode")) {
             addListeners();
             getCategory();
@@ -40,7 +42,7 @@ define([
     }
 
     function getCategory() {
-        Ajax.get(APIURL + "/commodity/category/list", {
+        Ajax.get("808006", {
             "companyCode": COMPANYCODE,
             "type": "1"
         }).then(function(res) {
@@ -69,7 +71,6 @@ define([
                     html += '<li code="' + seqArr[j].code + '">' + seqArr[j].name + '</li>';
                     html1 += '<li code="' + seqArr[j].code + '" class="wp33 tl fl">' + seqArr[j].name + '</li>';
                 }
-                var nowSmallArr = [];
                 if (bigCode == "") {
                     bigCode = seqArr[0].code;
                 }
@@ -80,11 +81,11 @@ define([
                 scroller.find("ul>li[code='" + bigCode + "']").click();
             } else {
                 doError();
-                $("header").hide();
+                $("header, #mtop").hide();
             }
         }, function() {
             doError();
-            $("header").hide();
+            $("header, #mtop").hide();
         })
     }
 
@@ -103,8 +104,10 @@ define([
         smallCont.html(sHtml);
         smallCode = nowSmallArr[0] && nowSmallArr[0].code;
         if (!sHtml) {
+            $("#smlWrapper").parent().addClass("hidden");
             $('#mtop').addClass("hp42p").removeClass("hp84p");
         } else {
+            $("#smlWrapper").parent().removeClass("hidden");
             $('#mtop').removeClass("hp42p").addClass("hp84p");
             var lis = smallCont.find("li");
             for (var i = 0, width = 0; i < lis.length; i++) {
@@ -125,7 +128,7 @@ define([
         myScroll = new IScroll('#mallWrapper', { scrollX: true, scrollY: false, eventPassthrough: true, snap: true });
     }
 
-    function addListeners(params) {
+    function addListeners() {
         /**大类start */
         $("#scroller").on("click", "li", function() {
             var me = $(this);
@@ -154,7 +157,6 @@ define([
         });
         /**小类end */
         $(window).on("scroll", function() {
-            var me = $(this);
             if (canScrolling && ($(document).height() - $(window).height() - 10 <= $(document).scrollTop())) {
                 canScrolling = false;
                 getProduces();
@@ -165,27 +167,21 @@ define([
     var xhr = null;
 
     function getProduces() {
-        xhr && xhr.abort();
         if (!first) {
             $("#cont").append('<i id="loadI" class="icon-loading2"></i>');
         } else {
             $("#cont").html('<i id="loadI" class="icon-loading3"></i>');
         }
-        xhr = $.ajax({
-            async: true,
-            type: 'get',
-            url: APIURL + '/commodity/product/page',
-            data: {
-                "category": bigCode,
-                "type": smallCode,
-                "companyCode": COMPANYCODE,
-                "start": start,
-                "limit": limit,
-                "orderColumn": "order_no",
-                "orderDir": "asc"
-            }
-        });
-        xhr.then(function(res) {
+        Ajax.get("808020", {
+            "category": bigCode,
+            "type": smallCode,
+            "companyCode": COMPANYCODE,
+            "start": start,
+            "limit": limit,
+            "orderColumn": "order_no",
+            "orderDir": "asc",
+            "status": "1"
+        }).then(function(res) {
             $("#loadI").remove();
             if (res.success && res.data.list.length) {
                 var data = res.data.list,
@@ -214,12 +210,7 @@ define([
                 canScrolling = false;
             }
         }, function() {
-            if (xhr.statusText != "abort") {
-                if (first) {
-                    doError();
-                }
-                base.showMsg("非常抱歉，暂时无法获取商品数据");
-            }
+            base.showMsg("非常抱歉，暂时无法获取商品数据");
         });
     }
 

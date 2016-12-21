@@ -1,10 +1,11 @@
 define([
     'app/controller/base',
-    'app/util/ajax'
-], function(base, Ajax) {
+    'app/module/foot/foot'
+], function(base, Foot) {
     init();
 
     function init() {
+        Foot.addFoot(3);
         if (!base.isLogin()) {
             location.href = "./login.html?return=" + base.makeReturnUrl();
         } else {
@@ -30,7 +31,7 @@ define([
     }
 
     function getUserInfo() {
-        Ajax.get(APIURL + '/user', {})
+        base.getUser()
             .then(function(response) {
                 $("#loadI").hide();
                 if (response.success) {
@@ -39,9 +40,9 @@ define([
                         $("#mobile").text(data.nickname);
                         data.userExt.photo && $("#photo").attr("src", data.userExt.photo);
                         if (data.mobile) {
-                            localStorage.setItem("m", data.mobile);
+                            sessionStorage.setItem("m", data.mobile);
                         } else {
-                            localStorage.removeItem("m");
+                            sessionStorage.removeItem("m");
                         }
                     } else {
                         $("#mobile").text(data.mobile);
