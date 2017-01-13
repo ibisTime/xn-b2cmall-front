@@ -15,7 +15,7 @@ define([
             base.showMsg("充值失败，未传入二维码编号");
             $("#loading").remove();
             setTimeout(function() {
-                location.href = "../home/index.html";
+                location.href = "../index.html";
             }, 1500);
         } else {
             Ajax.post("805321", {

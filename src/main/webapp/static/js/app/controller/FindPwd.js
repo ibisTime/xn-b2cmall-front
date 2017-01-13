@@ -1,8 +1,9 @@
 define([
     'app/controller/base',
     'app/util/ajax',
-    'app/util/validate'
-], function(base, Ajax, Validate) {
+    'app/module/validate/validate',
+    'app/module/smsCaptcha/smsCaptcha'
+], function(base, Ajax, Validate, smsCaptcha) {
     var COMPANYCODE;
     init();
 
@@ -76,40 +77,8 @@ define([
         $("#sbtn").on("click", function() {
             valide();
         });
-        $("#getVerification").on("click", function() {
-            $("#mobile").valid() && handleSendVerifiy();
-        });
-    }
-
-    function handleSendVerifiy() {
-        var verification = $("#getVerification");
-        verification.attr("disabled", "disabled");
-        Ajax.post('805904', {
-            json: {
-                "bizType": "805171",
-                "kind": "f1",
-                "mobile": $("#mobile").val()
-            }
-        }).then(function(response) {
-            if (response.success) {
-                for (var i = 0; i <= 60; i++) {
-                    (function(i) {
-                        setTimeout(function() {
-                            if (i < 60) {
-                                verification.val((60 - i) + "s");
-                            } else {
-                                verification.val("获取验证码").removeAttr("disabled");
-                            }
-                        }, 1000 * i);
-                    })(i);
-                }
-            } else {
-                base.showMsg(response.msg);
-                verification.val("获取验证码").removeAttr("disabled");
-            }
-        }, function() {
-            base.showMsg("验证码获取失败");
-            verification.val("获取验证码").removeAttr("disabled");
+        smsCaptcha.init({
+            bizType: "805171"
         });
     }
 

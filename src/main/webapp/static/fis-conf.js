@@ -3,7 +3,7 @@ fis.hook('amd', {
     paths: {
         'Handlebars': 'lib/handlebars.runtime-v3.0.3',
         'IScroll': "lib/iscroll",
-        'jValidate': "lib/jquery.validate",
+        'jValidate': "lib/validate/jquery.validate",
         'jquery': "lib/jquery-2.1.4",
         'swiper': "lib/swiper/swiper-3.3.1.jquery.min"
     },
@@ -39,7 +39,7 @@ fis.match('::package', {
         useInlineMap: true
     })
 });
-fis.match('/js/module/**.js', {
+fis.match('/js/module/**', {
     isMod: true
 });
 fis.media("prod")
@@ -50,11 +50,12 @@ fis.media("prod")
             }
         })
     })
+    .match('/js/require.js', {
+        packTo: '/pkg/common.js',
+        packOrder: -100
+    })
     .match('{/js/lib/*.js,/js/app/util/*.js,/js/app/controller/base.js}', {
         requires: ['/js/require.js'],
-        packTo: '/pkg/common.js'
-    })
-    .match('/js/require.js', {
         packTo: '/pkg/common.js'
     })
     .match("**.js", {

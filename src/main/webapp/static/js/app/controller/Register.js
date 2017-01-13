@@ -1,10 +1,11 @@
 define([
     'app/controller/base',
     'app/util/ajax',
-    'app/util/validate'
-], function(base, Ajax, Validate) {
-    var COMPANYCODE = "",
-        captchaCode;
+    'app/module/validate/validate',
+    'app/module/smsCaptcha/smsCaptcha',
+    'app/module/imgCaptcha/imgCaptcha'
+], function(base, Ajax, Validate, smsCaptcha, imgCaptcha) {
+    var COMPANYCODE = "";
     init();
 
     function init() {
@@ -30,12 +31,8 @@ define([
 
     function addListeners() {
         $.validator.addMethod("equalTo3", function(value, element) {
-            var returnVal = false;
-            var pattern = new RegExp("^" + captchaCode + "$", "i");
-            if (pattern.test(value)) {
-                returnVal = true;
-            }
-            !returnVal && createCaptcha();
+            var returnVal = imgCaptcha.checkCaptcha(value);
+            !returnVal && $("#captchaImg").click();
             return this.optional(element) || returnVal;
         }, "验证码错误");
         $("#registForm").validate({
@@ -74,65 +71,21 @@ define([
                         "display": "none"
                     });
             });
-        $("#getVerification").on("click", function() {
-            if ($("#mobile").valid() && $("#captcha").valid()) {
-                $(this).attr("disabled", "disabled");
-                handleSendVerifiy();
+        smsCaptcha.init({
+            checkInfo: function () {
+                return $("#mobile").valid() && $("#captcha").valid();
+            },
+            bizType: "805076",
+            errorFn: function () {
+                $("#captchaImg").click();
             }
         });
         $("#registerBtn").on("click", function(e) {
             register();
         });
         $("#captchaImg").on("click", function() {
-            createCaptcha();
+            $(this).text( imgCaptcha.createCaptcha() );
         });
-    }
-
-    function createCaptcha() {
-        var selectChar = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-            'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-            'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
-            'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-            'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-        captchaCode = "";
-        for (var i = 0; i < 4; i++) {
-            captchaCode += selectChar[Math.floor(Math.random() * 60)];
-        }
-        $("#captchaImg").text(captchaCode);
-    }
-
-    function handleSendVerifiy() {
-        Ajax.post('805904', {
-                json: {
-                    "bizType": "805076",
-                    "kind": "f1",
-                    "mobile": $("#mobile").val()
-                }
-            })
-            .then(function(response) {
-                if (response.success) {
-                    for (var i = 0; i <= 60; i++) {
-                        (function(i) {
-                            setTimeout(function() {
-                                if (i < 60) {
-                                    $("#getVerification").val((60 - i) + "s");
-                                } else {
-                                    $("#getVerification").val("获取验证码").removeAttr("disabled");
-                                }
-                            }, 1000 * i);
-                        })(i);
-                    }
-                } else {
-                    $("#captchaImg").click();
-                    base.showMsg(response.msg);
-                    $("#getVerification").val("获取验证码").removeAttr("disabled");
-                }
-            }, function() {
-                $("#captchaImg").click();
-                base.showMsg('验证码获取失败');
-                $("#getVerification").val("获取验证码").removeAttr("disabled");
-            });
     }
 
     function finalRegister() {

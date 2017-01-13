@@ -10,7 +10,7 @@ define([
             orderStatus = Dict.get("orderStatus"),
             fastMail = Dict.get("fastMail"),
             addrTmpl = __inline("../ui/order-detail-addr.handlebars"),
-            contTmpl = __inline("../ui/pay-order-imgs.handlebars");
+            contTmpl = __inline("../ui/order-detail-imgs.handlebars");
 
         init();
 
@@ -21,6 +21,9 @@ define([
                 if (code) {
                     Handlebars.registerHelper('formatPrice', function (num) {
                         return (+num / 1000).toFixed(2);
+                    });
+                    Handlebars.registerHelper('formatPic', function (pic) {
+                        return pic.split(/\|\|/)[0];
                     });
                     $("#orderCode").text(code);
                     getOrder();

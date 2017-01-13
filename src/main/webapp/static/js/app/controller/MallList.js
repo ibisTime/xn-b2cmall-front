@@ -2,8 +2,9 @@ define([
     'app/controller/base',
     'app/util/ajax',
     'IScroll',
-    'app/module/foot/foot'
-], function(base, Ajax, IScroll, Foot) {
+    'app/module/foot/foot',
+    'app/module/commodities/commodities'
+], function(base, Ajax, IScroll, Foot, Commodities) {
     var first = true,
         COMPANYCODE = "",
         bigCode = base.getUrlParam("b") || "",
@@ -13,9 +14,6 @@ define([
         seqArr = [],
         D2XArr = [],
         canScrolling = false,
-        winWidth = $(window).width(),
-        width4 = (winWidth - 32) / 100 * 4,
-        width = (winWidth - 32) / 100 * 48 + "px",
         myScroll, smallScroll;
     init();
 
@@ -32,10 +30,12 @@ define([
                         getCategory();
                     } else {
                         doError();
+                        $("header, #mtop").hide();
                         base.showMsg(res.msg);
                     }
                 }, function() {
                     doError();
+                    $("header, #mtop").hide();
                     base.showMsg("非常抱歉，暂时无法获取公司信息!");
                 });
         }
@@ -172,7 +172,7 @@ define([
         } else {
             $("#cont").html('<i id="loadI" class="icon-loading3"></i>');
         }
-        Ajax.get("808020", {
+        xhr = Ajax.get("808020", {
             "category": bigCode,
             "type": smallCode,
             "companyCode": COMPANYCODE,
@@ -180,26 +180,12 @@ define([
             "limit": limit,
             "orderColumn": "order_no",
             "orderDir": "asc",
-            "status": "1"
-        }).then(function(res) {
+            "status": "3"
+        });
+        xhr.then(function(res) {
             $("#loadI").remove();
             if (res.success && res.data.list.length) {
-                var data = res.data.list,
-                    html = "";
-                for (var i = 0; i < data.length; i++) {
-                    if (i < 2) {
-                        html += '<div style="width:' + width + '" class="bg_fff display">';
-                    } else {
-                        html += '<div style="width:' + width + ';margin-top:' + width4 + 'px" class="bg_fff display">';
-                    }
-                    html += '<a class="wp100" href="../operator/buy.html?code=' + data[i].code + '">' +
-                        '<img class="va-b" style="width:' + width + ';height:' + width + '" src="' + data[i].advPic + '">' +
-                        '<div class="pl6 pt4 t_3dot">' + data[i].name + '</div>' +
-                        '<div class="price pl6 s_15">￥' + (+data[i].discountPrice / 1000).toFixed(2) +
-                        '<del class="ml5 s_13 t_999"><span class="price-icon">¥</span><span class="font-num">' + (+data[i].originalPrice / 1000).toFixed(2) + '</span></del></div>' +
-                        '</a></div>';
-                }
-                $("#cont").append(html);
+                $("#cont").append( Commodities.createCommodities(res.data.list) );
                 start++;
                 canScrolling = true;
                 first = false;

@@ -1,13 +1,15 @@
 define([
     'app/controller/base',
     'app/util/ajax',
+    'app/module/foot/foot',
     'Handlebars'
-], function(base, Ajax, Handlebars) {
+], function(base, Ajax, Foot, Handlebars) {
     var code = base.getUrlParam("code") || "",
         addressTmpl = __inline("../ui/pay-order-address.handlebars");
     init();
 
     function init() {
+        Foot.addFoot(3);
         if (!base.isLogin()) {
             location.href = "../user/login.html?return=" + base.makeReturnUrl();
         } else {

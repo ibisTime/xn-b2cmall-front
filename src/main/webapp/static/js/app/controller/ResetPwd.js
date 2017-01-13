@@ -1,7 +1,7 @@
 define([
     'app/controller/base',
     'app/util/ajax',
-    'app/util/validate'
+    'app/module/validate/validate'
 ], function(base, Ajax, Validate) {
     init();
 

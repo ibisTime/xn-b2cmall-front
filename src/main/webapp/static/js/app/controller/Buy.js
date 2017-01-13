@@ -1,8 +1,9 @@
 define([
     'app/controller/base',
     'app/util/ajax',
-    'swiper'
-], function(base, Ajax, Swiper) {
+    'swiper',
+    'app/module/addSub/addSub'
+], function(base, Ajax, Swiper, addSub) {
     var quantity = 0,
         code = base.getUrlParam("code") || "";
     init();
@@ -18,12 +19,14 @@ define([
                 if (res.success) {
                     var data = res.data,
                         $swiper = $("#btlImgs"),
-                        imgs_html = '<div class="swiper-slide tc"><img src="' + data.pic1 + '"></div>' +
-                            '<div class="swiper-slide tc"><img src="' + data.pic2 + '"></div>' +
-                            '<div class="swiper-slide tc"><img src="' + data.pic3 + '"></div>' +
-                            '<div class="swiper-slide tc"><img src="' + data.pic4 + '"></div>';
+                        imgs_html = '';
+                    data.pic1 = data.pic1.split(/\|\|/);
+                    for(var i = 0; i < data.pic1.length; i++){
+                        imgs_html += '<div class="swiper-slide tc"><img src="' + data.pic1[i] + '"></div>';
+                    }
                     $swiper.html(imgs_html);
                     swiperImg();
+                    data.discountPrice = data.price2;
                     $("#btr-name").text(data.name);
                     $("#btr-advTitle").text(data.advTitle);
                     $("#description").html(data.description);
@@ -104,58 +107,67 @@ define([
     }
 
     function addListeners() {
-        $("#subCount").on("click", function() {
-            var orig = $("#buyCount").val();
-            if (orig == undefined || orig.trim() == "" || orig == "0" || orig == "1") {
-                orig = 2;
+        // $("#subCount").on("click", function() {
+        //     var orig = $("#buyCount").val();
+        //     if (orig == undefined || orig.trim() == "" || orig == "0" || orig == "1") {
+        //         orig = 2;
+        //     }
+        //     orig = +orig - 1;
+        //     $("#buyCount").val(orig);
+        //     $("#buyCount").change();
+        // });
+        // $("#addCount").on("click", function() {
+        //     var orig = $("#buyCount").val();
+        //     if (orig == undefined || orig.trim() == "") {
+        //         orig = 0;
+        //     }
+        //     orig = +orig + 1;
+        //     $("#buyCount").val(orig);
+        //     $("#buyCount").change();
+        // });
+        // $("#buyCount").on("keyup", function(e) {
+        //     var keyCode = e.charCode || e.keyCode;
+        //     if (!isSpecialCode(keyCode) && !isNumber(keyCode)) {
+        //         this.value = this.value.replace(/[^\d]/g, "");
+        //     }
+        // }).on("change", function(e) {
+        //     var keyCode = e.charCode || e.keyCode;
+        //     if (!isSpecialCode(keyCode) && !isNumber(keyCode)) {
+        //         this.value = this.value.replace(/[^\d]/g, "");
+        //     }
+        //     if (!$(this).val()) {
+        //         this.value = "1";
+        //     }
+        //     if ($(this).val() == "0") {
+        //         this.value = "1";
+        //     }
+        //     var unitPrice = +$("#unit-price").val();
+        //     $("#btr-price").text("￥" + (unitPrice * +$(this).val() / 1000).toFixed(2));
+        // });
+        addSub.createByEle({
+            sub: $("#subCount"),
+            add: $("#addCount"),
+            input: $("#buyCount"),
+            changeFn: function () {
+                var unitPrice = +$("#unit-price").val();
+                $("#btr-price").text("￥" + (unitPrice * +$(this).val() / 1000).toFixed(2));
             }
-            orig = +orig - 1;
-            $("#buyCount").val(orig);
-            $("#buyCount").change();
-        });
-        $("#addCount").on("click", function() {
-            var orig = $("#buyCount").val();
-            if (orig == undefined || orig.trim() == "") {
-                orig = 0;
-            }
-            orig = +orig + 1;
-            $("#buyCount").val(orig);
-            $("#buyCount").change();
-        });
-        $("#buyCount").on("keyup", function(e) {
-            var keyCode = e.charCode || e.keyCode;
-            if (!isSpecialCode(keyCode) && !isNumber(keyCode)) {
-                this.value = this.value.replace(/[^\d]/g, "");
-            }
-        }).on("change", function(e) {
-            var keyCode = e.charCode || e.keyCode;
-            if (!isSpecialCode(keyCode) && !isNumber(keyCode)) {
-                this.value = this.value.replace(/[^\d]/g, "");
-            }
-            if (!$(this).val()) {
-                this.value = "1";
-            }
-            if ($(this).val() == "0") {
-                this.value = "1";
-            }
-            var unitPrice = +$("#unit-price").val();
-            $("#btr-price").text("￥" + (unitPrice * +$(this).val() / 1000).toFixed(2));
         });
     }
 
-    function isNumber(code) {
-        if (code >= 48 && code <= 57 || code >= 96 && code <= 105) {
-            return true;
-        }
-        return false;
-    }
-
-    function isSpecialCode(code) {
-        if (code == 37 || code == 39 || code == 8 || code == 46) {
-            return true;
-        }
-        return false;
-    }
+    // function isNumber(code) {
+    //     if (code >= 48 && code <= 57 || code >= 96 && code <= 105) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
+    //
+    // function isSpecialCode(code) {
+    //     if (code == 37 || code == 39 || code == 8 || code == 46) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     function add2Cart() {
         if (base.isLogin()) {

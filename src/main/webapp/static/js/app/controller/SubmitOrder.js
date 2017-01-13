@@ -76,6 +76,7 @@ define([
                         var items = [];
                         for (var i = 0, len = code.length; i < len; i++) {
                             var d = data[code[i]];
+                            d.salePrice = d.price2;
                             var eachCount = (+d.salePrice) * (+d.quantity);
                             d.product = {};
                             d.product.name = d.productName;
@@ -113,6 +114,7 @@ define([
                 if (response.success) {
                     var data = response.data,
                         items = [];
+                    data.discountPrice = data.price2;
                     var eachCount = +data.discountPrice * +q;
                     data.product = {};
                     data.product.discountPrice = (+data.discountPrice / 1000).toFixed(2);
@@ -162,7 +164,8 @@ define([
                         "receiver": $a.find(".a-addressee").text(),
                         "reMobile": $a.find(".a-mobile").text(),
                         "reAddress": $a.find(".a-province").text() + $a.find(".a-city").text() + $a.find(".a-district").text() + $a.find(".a-detailAddress").text(),
-                        "applyNote": $("#apply_note").val() || ""
+                        "applyNote": $("#apply_note").val() || "",
+                        "applyUser": sessionStorage.getItem("user")
                     };
                 } else if (type == 2) {
                     var cartList = [],
@@ -175,7 +178,8 @@ define([
                         "reMobile": $a.find(".a-mobile").text(),
                         "reAddress": $a.find(".a-province").text() + $a.find(".a-city").text() + $a.find(".a-district").text() + $a.find(".a-detailAddress").text(),
                         "applyNote": $("#apply_note").val() || "",
-                        "cartCodeList": cartList
+                        "cartCodeList": cartList,
+                        "applyUser": sessionStorage.getItem("user")
                     };
                     postCode = "808051";
                 } else {

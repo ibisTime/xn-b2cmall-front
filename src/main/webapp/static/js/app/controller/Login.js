@@ -1,7 +1,7 @@
 define([
     'app/controller/base',
     'app/util/ajax',
-    'app/util/validate',
+    'app/module/validate/validate',
     'app/module/foot/foot'
 ], function(base, Ajax, Validate, Foot) {
     var returnUrl, COMPANYCODE;
@@ -55,7 +55,7 @@ define([
 
         $("#wechat").on("click", function() {
             $("#loading").removeClass("hidden");
-            Ajax.get(APIURL + "/gene/pwd/list", {
+            Ajax.get("806031", {
                     companyCode: COMPANYCODE,
                     account: "AppID"
                 })

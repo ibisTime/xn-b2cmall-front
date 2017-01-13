@@ -1,7 +1,4 @@
-define([
-    'app/controller/base',
-    'app/util/ajax'
-], function(base, ajax) {
+define([], function() {
     var dict = {
         receiptType: {
             "1": "个人",
@@ -37,15 +34,6 @@ define([
             'XB': 'S$',
             'SGD': 'S$'
         }
-    };
-
-    var changeToObj = function(data) {
-        var data = data || [],
-            obj = {};
-        data.forEach(function(item) {
-            obj[item.dkey] = item.dvalue;
-        });
-        return obj;
     };
 
     return {

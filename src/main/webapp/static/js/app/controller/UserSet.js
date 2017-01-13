@@ -23,7 +23,7 @@ define([
     function addListeners() {
         $("#loginOut").on("click", function() {
             base.logout();
-            location.href = '../home/index.html';
+            location.href = '../index.html';
         });
     }
 });

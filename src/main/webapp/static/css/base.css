@@ -2064,28 +2064,6 @@ table td {
     overflow: hidden;
 }
 
-.swiper-container .buy-swiper-top .swiper-slide img {
-    max-height: 600px;
-}
-
-@media only screen and (max-width: 1024px) {
-    .swiper-container .buy-swiper-top .swiper-slide img {
-        max-height: 500px;
-    }
-}
-
-@media only screen and (max-width: 735px) {
-    .swiper-container .buy-swiper-top .swiper-slide img {
-        max-height: 410px;
-    }
-}
-
-@media only screen and (max-width: 480px) {
-    .swiper-container .buy-swiper-top .swiper-slide img {
-        max-height: 337px;
-    }
-}
-
 .no-buy-btn {
     background-color: #EEEEEE !important;
 }

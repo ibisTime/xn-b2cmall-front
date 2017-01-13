@@ -53,6 +53,10 @@ define(["jquery"], function($) {
                 });
             }
             return cache[cache_url].then(function(res) {
+                if(res.errorCode == "4"){
+                    clearSessionUser();
+                    location.href = "../user/login.html?return=" + encodeURIComponent(location.pathname + location.search);
+                }
                 var result = {};
                 res.errorCode == "0" ? (result.success = true, result.data = res.data) :
                     (result.success = false, result.msg = res.errorInfo);

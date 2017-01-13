@@ -2,12 +2,11 @@ define([
     'app/controller/base',
     'app/util/ajax',
     'swiper',
-    'app/module/foot/foot'
-], function(base, Ajax, Swiper, Foot) {
+    'app/module/foot/foot',
+    'app/module/commodities/commodities'
+], function(base, Ajax, Swiper, Foot, Commodities) {
     var COMPANYCODE = "",
         winWidth = $(window).width(),
-        width = (winWidth - 32) / 100 * 48 + "px",
-        width4 = (winWidth - 32) / 100 * 4,
         cateWidth = (winWidth - 32) / 100 * 25 - 32;
     init();
 
@@ -61,6 +60,7 @@ define([
                         }
                         html += '<div class="pt6 clearfix">';
                     }
+                    data[i].pic = data[i].pic.split(/\|\|/)[0];
                     html += '<a href="../detail/mall_list.html?b=' + data[i].code + '" class="wp25 fl p_r tc category-item" code="' + data[i].code + '">' +
                         '<div style="width:' + cateWidth + 'px;height:' + cateWidth + 'px;border-radius:100%;overflow:hidden;margin:0 auto;">' +
                         '<img src="' + data[i].pic + '" style="width:' + cateWidth + 'px;height:' + cateWidth + 'px;"></div>' +
@@ -95,27 +95,12 @@ define([
             "limit": 10,
             "orderColumn": "order_no",
             "orderDir": "asc",
-            "status": "1"
+            "status": "3"
         };
         Ajax.get("808020", config)
             .then(function(res) {
                 if (res.success && res.data.list.length) {
-                    var list = res.data.list,
-                        html = '';
-                    for (var i = 0; i < list.length; i++) {
-                        if (i < 2) {
-                            html += '<div style="width:' + width + '" class="bg_fff display">';
-                        } else {
-                            html += '<div style="width:' + width + ';margin-top:' + width4 + 'px" class="bg_fff display">';
-                        }
-                        html += '<a class="wp100" href="../operator/buy.html?code=' + list[i].code + '">' +
-                            '<img style="width:' + width + ';height:' + width + '" src="' + list[i].advPic + '">' +
-                            '<div class="pl6 pt4 t_3dot">' + list[i].name + '</div>' +
-                            '<div class="price pl6 s_15">￥' + (+list[i].discountPrice / 1000).toFixed(2) +
-                            '<del class="ml5 s_13 t_999"><span class="price-icon">¥</span><span class="font-num">' + (+list[i].originalPrice / 1000).toFixed(2) + '</span></del></div>' +
-                            '</a></div>';
-                    }
-                    $(id2).html(html);
+                    $(id2).html( Commodities.createCommodities(res.data.list) );
                 } else {
                     doError(id2, "暂无相关商品");
                 }

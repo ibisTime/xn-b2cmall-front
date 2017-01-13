@@ -175,7 +175,7 @@ define([
             if (rUrl) {
                 location.href = rUrl;
             } else {
-                location.href = url || "../home/index.html";
+                location.href = url || "../index.html";
             }
         },
         addIcon: function() {
@@ -224,16 +224,16 @@ define([
             return Ajax.get("806051", { "companyCode": code, "location": location, "type": "2" });
         },
         getDomain: function() {
-            var url = location.href;
-            var idx = url.indexOf("/m/");
-            if (idx != -1) {
-                url = url.substring(0, idx);
-            }
+            // var url = location.href;
+            // var idx = url.indexOf("/m/");
+            // if (idx != -1) {
+            //     url = url.substring(0, idx);
+            // }
+            var url = location.protocol + "//" + location.host;
             return url
         },
         getCompanyByUrl: function() {
             var url = Base.getDomain();
-            //return Ajax.get(APIURL + '/gene/byUrl', { "url": url })
             return Ajax.get("806015", { "domain": url })
                 .then(function(res) {
                     if (res.success && !$.isEmptyObject(res.data)) {
