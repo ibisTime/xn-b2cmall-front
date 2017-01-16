@@ -58,6 +58,9 @@ fis.media("prod")
         requires: ['/js/require.js'],
         packTo: '/pkg/common.js'
     })
+    .match('/js/config.js', {
+        packTo: '/pkg/config.js'
+    })
     .match("**.js", {
         optimizer: fis.plugin('uglify-js')
     })
