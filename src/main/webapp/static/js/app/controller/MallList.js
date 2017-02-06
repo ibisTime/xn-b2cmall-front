@@ -15,7 +15,7 @@ define([
         winWidth = $(window).width(),
         width4 = (winWidth - 32) / 100 * 4,
         width = (winWidth - 32) / 100 * 48 + "px",
-        myScroll;
+        myScroll, smallScroll;
     init();
 
     function init() {
@@ -30,10 +30,12 @@ define([
                         getCategory();
                     } else {
                         doError();
+                        $("header, #mtop").hide();
                         base.showMsg(res.msg);
                     }
                 }, function() {
                     doError();
+                    $("header, #mtop").hide();
                     base.showMsg("非常抱歉，暂时无法获取公司信息!");
                 });
         }
@@ -75,17 +77,16 @@ define([
                 }
                 var scroller = $("#scroller");
                 scroller.find("ul").html(html);
-                $("#allItem").find("ul").html(html1);
                 addCategory();
                 //click
                 scroller.find("ul>li[code='" + bigCode + "']").click();
             } else {
                 doError();
-                $("header").hide();
+                $("header, #mtop").hide();
             }
         }, function() {
             doError();
-            $("header").hide();
+            $("header, #mtop").hide();
         })
     }
 
@@ -96,79 +97,40 @@ define([
             sHtml = "";
         for (var j = 0; j < nowSmallArr.length; j++) {
             if (!j) {
-                sHtml += '<a class="mb10 lh29p subclass" href="javascript:void(0)" code="' + nowSmallArr[j].code + '"><span class="plr10">' + nowSmallArr[j].name + '</span></a>';
+                sHtml += '<li class="item1 checked" code="' + nowSmallArr[j].code + '">' + nowSmallArr[j].name + '</li>'
             } else {
-                sHtml += '<a class="mb10 lh29p" href="javascript:void(0)" code="' + nowSmallArr[j].code + '"><span class="plr10">' + nowSmallArr[j].name + '</span></a>';
+                sHtml += '<li class="item1" code="' + nowSmallArr[j].code + '">' + nowSmallArr[j].name + '</li>'
             }
         }
         smallCont.html(sHtml);
         smallCode = nowSmallArr[0] && nowSmallArr[0].code;
-        if (!sHtml || smallCont.height() <= 42) {
-            //sHtml && smallCont.removeClass("hidden");
-            $("#mallUD").addClass("up-arrow").removeClass("down-arrow").addClass("hidden");
-            smallCont.css("height", "auto");
-            if (!sHtml) {
-                $('#mtop').addClass("hp60p").removeClass("hp100p");
-            } else {
-                $('#mtop').removeClass("hp60p").addClass("hp100p");
+        if (!sHtml) {
+            $("#smlWrapper").parent().addClass("hidden");
+            $('#mtop').addClass("hp42p").removeClass("hp84p");
+        } else {
+            $("#smlWrapper").parent().removeClass("hidden");
+            $('#mtop').removeClass("hp42p").addClass("hp84p");
+            var lis = smallCont.find("li");
+            for (var i = 0, width = 0; i < lis.length; i++) {
+                width += lis.eq(i).width() + 38;
             }
-        } else if (smallCont.height() > 42) {
-            $("#mallUD").removeClass("up-arrow").addClass("down-arrow").removeClass("hidden");
-            smallCont.css("height", "47px");
-            $('#mtop').removeClass("hp60p").addClass("hp100p");
+            $("#smlSDiv").css("width", width);
+            smallScroll = new IScroll("#smlWrapper", { scrollX: true, scrollY: false, eventPassthrough: true });
         }
-        // var time = setInterval(function() {
-        //     if (scroller.css("transform") != "none") {
-        //         if ((sHtml && smallCont.find("a").length) || !sHtml) {
-        //             clearInterval(time);
-        //             if (smallCont.height() > 42) {
-        //                 $("#mallUD").removeClass("up-arrow").addClass("down-arrow").removeClass("hidden");
-        //                 smallCont.css("height", "47px");
-        //                 $('#mtop').removeClass("hp60p").addClass("hp100p");
-        //             } else {
-        //                 $("#mallUD").removeClass("down-arrow").addClass("up-arrow").addClass("hidden");
-        //                 smallCont.css("height", "auto");
-        //                 if (!sHtml) {
-        //                     $('#mtop').addClass("hp60p").removeClass("hp100p");
-        //                 } else {
-        //                     $('#mtop').removeClass("hp60p").addClass("hp100p");
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }, 100);
     }
 
     function addCategory() {
-        var scroller = $("#scroller");
+    	var scroller = $("#scroller");
         var lis = scroller.find("ul li");
         for (var i = 0, width = 0; i < lis.length; i++) {
-            width += $(lis[i]).width() + 29;
+            width += lis.eq(i).width() + 29;
         }
         $("#scroller").css("width", width);
-        myScroll = new IScroll('#mallWrapper', { scrollX: true, scrollY: false, mouseWheel: true, click: true });
+        myScroll = new IScroll('#mallWrapper', { scrollX: true, scrollY: false, eventPassthrough: true, snap: true });
     }
 
     function addListeners(params) {
-        /**大类start */
-        $("#down").on("click", function() {
-            var me = $(this);
-            if (me.hasClass("down-arrow")) {
-                $("#allCont").removeClass("hidden");
-                me.removeClass("down-arrow").addClass("up-arrow");
-            } else {
-                $("#allCont").addClass("hidden");
-                me.removeClass("up-arrow").addClass("down-arrow");
-            }
-        });
-        $("#mall-mask").on("click", function() {
-            $("#down").click();
-        });
-        $("#allItem").on("click", "li", function() {
-            var code = $(this).attr("code");
-            $("#scroller").find("li[code='" + code + "']").click();
-            $("#down").click();
-        });
+    	/**大类start */
         $("#scroller").on("click", "li", function() {
             var me = $(this);
             $("#mallWrapper").find(".current").removeClass("current");
@@ -180,44 +142,23 @@ define([
             first = true;
             start = 1;
             getProduces();
-            var allItem = $("#allItem");
-            allItem.find("li.current").removeClass("current");
-            allItem.find("li[code='" + bigCode + "']").addClass("current");
         });
         /**大类end */
         /**小类start */
-        $("#mallUD").on("click", function() {
-            var me = $(this),
-                smallCont = $("#smallCont");
-            if (me.hasClass("down-arrow")) {
-                me.removeClass("down-arrow").addClass("up-arrow");
-                smallCont.css("height", "auto");
-                $("#mask").removeClass("hidden");
-            } else {
-                me.removeClass("up-arrow").addClass("down-arrow");
-                smallCont.css("height", "47px");
-                $("#mask").addClass("hidden");
-            }
-        });
-        $("#mask").on("click", function() {
-            $("#mallUD").click();
-        })
-        $("#smallCont").on("click", "a", function() {
+        $("#smallCont").on("click", "li", function(e) {
+            e.stopPropagation();
             var me = $(this);
-            $("#smallCont").find(".subclass").removeClass("subclass");
-            me.addClass("subclass");
+            $("#smallCont").find(".checked").removeClass("checked");
+            me.addClass("checked");
             smallCode = me.attr("code");
+            smallScroll.scrollToElement(this);
             first = true;
             start = 1;
             getProduces();
-
-            $("#mallUD").removeClass("up-arrow").addClass("down-arrow");
-            $("#smallCont").css("height", "47px");
-            $("#mask").addClass("hidden");
         });
         /**小类end */
+        
         $(window).on("scroll", function() {
-            var me = $(this);
             if (canScrolling && ($(document).height() - $(window).height() - 10 <= $(document).scrollTop())) {
                 canScrolling = false;
                 getProduces();
@@ -277,10 +218,12 @@ define([
                 canScrolling = false;
             }
         }, function() {
-            if (first) {
-                doError();
+        	if (xhr.statusText != "abort") {
+                if (first) {
+                    doError();
+                }
+                base.showMsg("非常抱歉，暂时无法获取商品数据");
             }
-            base.showMsg("非常抱歉，暂时无法获取商品数据");
         });
     }
 

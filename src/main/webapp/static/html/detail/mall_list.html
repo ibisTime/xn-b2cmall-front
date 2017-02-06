@@ -6,12 +6,9 @@
     <title>产品分类</title>
     <style>
         #mallWrapper {
-            position: absolute;
             z-index: 1;
-            bottom: 48px;
-            top: 0;
-            right: 40px;
-            left: 0;
+            text-align: left;
+            width: 100%;
             background: #fff;
             height: 42px;
             line-height: 42px;
@@ -19,12 +16,9 @@
         }
         
         #scroller {
-            position: absolute;
             z-index: 1;
             color: #333;
-            left: 0px;
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-            height: 100%;
             background-color: #fff;
             -webkit-transform: translateZ(0);
             -moz-transform: translateZ(0);
@@ -46,13 +40,12 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            display: inline-block;
-            height: 100%;
         }
         
         #scroller li {
             float: left;
-            height: 100%;
+            height: 42px;
+            line-height: 42px;
             font-size: 1.4rem;
             padding: 0 14px;
         }
@@ -62,35 +55,57 @@
             color: #f64444;
         }
         
-        #down {
-            z-index: 1001;
+        .subCategoryBox {
+            position: absolute;
+            left: 15px;
+            right: 0;
+            overflow: hidden;
+        }
+        
+        .classify_show1 {
+            overflow: hidden;
+        }
+        
+        .sub_classify_list {
+            text-align: left;
+            overflow: hidden;
+        }
+        
+        .sub_classify_list li {
+            float: left;
+            padding: 0 10px;
+            color: #333;
+            font-size: 14px;
+            margin: 8px 15px 8px 0;
+            height: 24px;
+            line-height: 24px;
+        }
+        
+        .sub_classify_list li.checked {
+            background: #f64444;
+            border-radius: 12px;
+            color: #fff;
         }
     </style>
 </head>
 
 <body class="bg_f5">
     <header class="wp100" style="background: #f7f7f7;position: fixed;">
-        <div id="down" class="mall-up-down down-arrow"></div>
-        <div id="allCont" class="hidden bg_fff">
-            <div class="t_666 ml-top-fl plr16 bg_fff b_bd_b s_14 bg_fff">所有分类</div>
-            <div id="allItem" class="plr16 bg_fff ml-top-item s_14 b_bd_t">
-                <ul class="clearfix t_333"></ul>
-            </div>
-            <div id="mall-mask" class="mall-mask"></div>
-        </div>
         <div id="mallWrapper" class="b_bd_b z_index999">
             <div id="scroller">
                 <ul></ul>
             </div>
         </div>
-        <div class="p_r z_index999 bg_f5">
-            <div class="wp100 pl16 pr40 pt14 pb4 s_12" style="margin-top: 42px;overflow:hidden;" id="smallCont"></div>
-            <div class="small-up-down down-arrow hidden" id="mallUD"></div>
+        <div class="p_r bg_fa wp100 b_bd_b hp40p">
+            <div class="subCategoryBox" id="smlWrapper">
+                <div class="classify_show1" id="smlSDiv">
+                    <ul class="sub_classify_list" id="smallCont"></ul>
+                </div>
+            </div>
         </div>
-        <div class="mask hidden" id="mask"></div>
     </header>
-    <div id="mtop" class="wp100 hp100p"></div>
-    <div class="">
+    <div id="mtop" class="wp100 hp42p"></div>
+    <div class="mt16">
         <div class="">
             <div class="mlr index-center-div s_13" id="cont">
                 <i id="loadI" class="icon-loading"></i>
@@ -98,6 +113,7 @@
         </div>
     </div>
     <div style="height: 80px;"></div>
+    <a class="buy-cart-icon" href="../user/cart.html"><i></i></a>
     <footer class="fixft bg_fff b_bd_t hfoot s_12">
         <a href="../home/index.html" class="wp25 fl tc">
             <div class="wp100 pt8"><img src="../../images/hf1.png" /></div>
@@ -116,7 +132,6 @@
             <p class="ptb2">个人中心</p>
         </a>
     </footer>
-    <a class="buy-cart-icon" href="../user/cart.html"><i></i></a>
     <link rel="import" href="../footer.html?__inline">
     <script>
         require(['app/controller/MallList']);
